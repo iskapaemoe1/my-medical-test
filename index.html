@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивное Тестирование: Полная Сессия</title>
+    <title>Интерактивный Медицинский Тренажер</title>
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -14,7 +14,11 @@
             --text-muted: #4b5563;
             --border-color: #e5e7eb;
             --success-color: #10b981;
+            --success-bg: #f0fdf4;
+            --success-border: #34d399;
             --error-color: #ef4444;
+            --error-bg: #fff5f5;
+            --error-border: #f87171;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -102,11 +106,25 @@
 
         .option-item:hover .option-label { background-color: #f3f4f6; }
 
-        .option-item input[type="radio"]:checked + .option-label {
-            border-color: var(--primary-color);
-            background-color: #eef2ff;
-            color: var(--primary-color);
+        /* Стили для мгновенной подсветки правильных и неправильных ответов */
+        .option-item.correct-answer .option-label {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: var(--success-color) !important;
             font-weight: 600;
+        }
+
+        .option-item.wrong-answer .option-label {
+            background-color: var(--error-bg) !important;
+            border-color: var(--error-border) !important;
+            color: var(--error-color) !important;
+            font-weight: 600;
+        }
+
+        /* Если ответ уже проверен, выключаем курсор на остальных кнопках */
+        .options-container.checked .option-item input[type="radio"] {
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         .navigation-box { display: flex; justify-content: space-between; gap: 16px; }
@@ -122,6 +140,7 @@
 
         .btn-secondary { background-color: #e5e7eb; color: var(--text-muted); }
         .btn-primary { background-color: var(--primary-color); color: white; margin-left: auto; }
+        .btn-primary:disabled { background-color: #cbd5e0; cursor: not-allowed; }
 
         .result-screen { display: none; text-align: center; }
         .result-circle {
@@ -159,7 +178,7 @@
         <form id="optionsForm" class="options-container" onsubmit="event.preventDefault();"></form>
         <div class="navigation-box">
             <button id="prevBtn" class="btn btn-secondary" onclick="goBack()">Назад</button>
-            <button id="nextBtn" class="btn btn-primary" onclick="goNext()">Дальше</button>
+            <button id="nextBtn" class="btn btn-primary" onclick="goNext()" disabled>Дальше</button>
         </div>
     </div>
 
@@ -172,7 +191,7 @@
 </div>
 
 <script>
-    // ПОЛНЫЙ МАССИВ ИЗ ВСЕХ 388 ВОПРОСОВ СЕССИИ СТРОГО ПО ПОРЯДКУ
+    // ЧАСТЬ 1: ВОПРОСЫ С 1 ПО 200 СТРОГО ПО ПОРЯДКУ
     const quizQuestions = [
         { type: "boolean", question: '1:1. "Побочные действие" so\'zi o\'zbekchaga "Muolaja ta\'siri" deb tarjima qilinadi.', options: ["Верно", "Неверно"], correctAnswer: "Неверно" },
         { type: "boolean", question: '1:2. "Мышечная ткань" so\'zi o\'zbekchaga "Mushak to\'qimasi" deb tarjima qilinadi.', options: ["Верно", "Неверно"], correctAnswer: "Верно" },
@@ -310,7 +329,7 @@
         { type: "select", question: "1:134. Gormonlar va ichki sekresiya bezlarini davolovchi shifokor kim?", options: ["Endokrinolog", "Genetik", "Androlog", "Ginekolog"], correctAnswer: "Endokrinolog" },
         { type: "select", question: "1:135. Qon tomir tizimini o'rganadigan fan sohasi qaysi?", options: ["Angiologiya", "Kardiologiya", "Miyologiya", "Nevrologiya"], correctAnswer: "Angiologiya" },
         { type: "select", question: "1:136. Bo'g'imlar va biriktiruvchi to'qima kasalliklarini kim davolaydi?", options: ["Revmatolog", "Ortoped", "Vertebrolog", "Travmatolog"], correctAnswer: "Revmatolog" },
-        { type: "select", question: "1:137. Qariyalar salomatligi va kasalliklarini o'rganuvchi shifokor kim?", options: ["Geriatr", "Pediatr", "Terapevt", "Valeolog"], correctAnswer: "Geriatr" },
+        { type: "select", question: "1:137. Qariyalar salomatligi` va kasalliklarini o'rganuvchi shifokor kim?", options: ["Geriatr", "Pediatr", "Terapevt", "Valeolog"], correctAnswer: "Geriatr" },
         { type: "select", question: "1:138. O'smalarni davolash bilan shug'ullanuvchi shifokor kim?", options: ["Onkolog", "Rentgenolog", "Radiolog", "Xirurg"], correctAnswer: "Onkolog" },
         { type: "select", question: "1:139. Ko'z kasalliklarini davolovchi shifokor kim?", options: ["Oftalmolog", "Otolaringolog", "Nevrolog", "Stomatolog"], correctAnswer: "Oftalmolog" },
         { type: "select", question: "1:140. Teri kasalliklarini davolovchi shifokor kim?", options: ["Dermatolog", "Mikolog", "Trixolog", "Kosmetolog"], correctAnswer: "Dermatolog" },
@@ -358,7 +377,7 @@
         { type: "select", question: "1:182. \"Bayonnoma\" so'zining ruscha tarjimasi qaysi?", options: ["Протокол", "Отчет", "Справка", "Акт"], correctAnswer: "Протокол" },
         { type: "select", question: "1:183. \"Hisobot\" so'zining ruscha tarjimasi qaysi?", options: ["Отчет", "Справка", "План", "Договор"], correctAnswer: "Отчет" },
         { type: "select", question: "1:184. \"Ma'lumotnoma\" so'zining ruscha tarjimasi qaysi?", options: ["Справка", "Письмо", "Паспорт", "Карта"], correctAnswer: "Справка" },
-        { type: "select", question: "1:185. \"Shartnoma\" so'zining ruscha tarjimasi qaysi?", options: ["Договор / Контракт", "Соглашение", "Заявка", "Объявление"], correctAnswer: "Договор / Контракт" },
+        { type: "select", question: "1:185. \"Shartnoma\" so'zining ruscha tarjimasi qaysi?", options: ["Договор / Autentik", "Соглашение", "Заявка", "Объявление"], correctAnswer: "Договор / Контракт" },
         { type: "select", question: "1:186. \"Ariza\" so'zining ruscha tarjimasi qaysi?", options: ["Заявление", "Жалоба", "Письмо", "Запрос"], correctAnswer: "Заявление" },
         { type: "select", question: "1:187. \"Tushuntirish xati\" iborasining ruscha tarjimasi qaysi?", options: ["Объяснительная записка", "Докладная записка", "Письмо", "Справка"], correctAnswer: "Объяснительная записка" },
         { type: "select", question: "1:188. \"Bildirishnoma\" so'zining ruscha tarjimasi qaysi?", options: ["Уведомление / Докладная", "Объявление", "Реклама", "Приказ"], correctAnswer: "Уведомление / Докладная" },
@@ -373,202 +392,17 @@
         { type: "select", question: "1:197. \"Taklifnoma\" so'zining ruscha tarjimasi qaysi?", options: ["Приглашение", "Билет", "Письмо", "Афиша"], correctAnswer: "Приглашение" },
         { type: "select", question: "1:198. \"Raddiya\" so'zining ruscha tarjimasi qaysi?", options: ["Опровержение", "Отказ", "Жалоба", "Ответ"], correctAnswer: "Опровержение" },
         { type: "select", question: "1:199. \"Da'vo ariza\" iborasining ruscha tarjimasi qaysi?", options: ["Исковое заявление", "Жалоба", "Протест", "Договор"], correctAnswer: "Исковое заявление" },
-        { type: "select", question: "1:200. Ot so'z turkumi qanday so'roqlarga javob bo'ladi?", options: ["Kim? Nima? Qayer?", "Qanday? Qanaqa?", "Nechta? Qancha?", "Nima qildi? Nima qilyapti?"], correctAnswer: "Kim? Nima? Qayer?" },
-        { type: "select", question: "1:201. Sifat so'z turkumi qanday so'roqlarga javob bo'ladi?", options: ["Qanday? Qanaqa? Qaysi?", "Kim? Nima?", "Nechta? Qancha?", "Qachon? Qayerda?"], correctAnswer: "Qanday? Qanaqa? Qaysi?" },
-        { type: "select", question: "1:202. Son so'z turkumi qanday so'roqlarga javob bo'ladi?", options: ["Nechta? Qancha? Nechanchi?", "Kim? Nima?", "Qanday? Qaysi?", "Qachon? Qayerda?"], correctAnswer: "Nechta? Qancha? Nechanchi?" },
-        { type: "select", question: "1:203. Sonlar ma'nosiga ko'ra necha turga bo'linadi?", options: ["6 ta", "4 ta", "5 ta", "3 ta"], correctAnswer: "6 ta" },
-        { type: "select", question: "1:204. Sifatlar ma'nosiga ko'ra qanday turlarga bo'linadi?", options: ["Asliy va nisbiy", "Sodda va murakkab", "Ega va kesim", "Jonli va jonsiz"], correctAnswer: "Asliy va nisbiy" },
-        { type: "select", question: "1:205. O'zbek tilida nechta kelishik bor?", options: ["6 ta", "4 ta", "5 ta", "7 ta"], correctAnswer: "6 ta" },
-        { type: "select", question: "1:206. Bosh kelishikning qo'shimchasi qaysi?", options: ["Qo'shimchasi yo'q", "-ning", "-ni", "-ga"], correctAnswer: "Qo'shimchasi yo'q" },
-        { type: "select", question: "1:207. Qaratqich kelishigining qo'shimchasi qaysi?", options: ["-ning", "-ni", "-ga", "-da"], correctAnswer: "-ning" },
-        { type: "select", question: "1:208. Tushum kelishigining qo'shimchasi qaysi?", options: ["-ni", "-ning", "-ga", "-da"], correctAnswer: "-ni" },
-        { type: "select", question: "1:209. Jo'nalish kelishigining qo'shimchasi qaysi?", options: ["-ga (-ka, -qa)", "-ni", "-da", "-dan"], correctAnswer: "-ga (-ka, -qa)" },
-        { type: "select", question: "1:210. O'rin-payt kelishigining qo'shimchasi qaysi?", options: ["-da", "-dan", "-ga", "-ning"], correctAnswer: "-da" },
-        { type: "select", question: "1:211. Chiqish kelishigining qo'shimchasi qaysi?", options: ["-dan", "-da", "-ga", "-ni"], correctAnswer: "-dan" },
-        { type: "select", question: "1:212. Egalik qo'shimchalari nimani bildiradi?", options: ["Shaxs va narsaning qarashliligini", "Harakat yo'nalishini", "Narsaning miqdorini", "Ish-harakat vaqtini"], correctAnswer: "Shaxs va narsaning qarashliligini" },
-        { type: "select", question: "1:213. O'zbek tilida nechta shaxs bor?", options: ["3 ta", "2 ta", "4 ta", "5 ta"], correctAnswer: "3 ta" },
-        { type: "select", question: "1:214. I shaxs birlik egalik qo'shimchasi qaysi?", options: ["-im, -m", "-ing, -ng", "-i, -si", "-imiz"], correctAnswer: "-im, -m" },
-        { type: "select", question: "1:215. II shaxs birlik egalik qo'shimchasi qaysi?", options: ["-ing, -ng", "-im, -m", "-i, -si", "-ingiz"], correctAnswer: "-ing, -ng" },
-        { type: "select", question: "1:216. III shaxs birlik egalik qo'shimchasi qaysi?", options: ["-i, -si", "-im", "-ing", "-lari"], correctAnswer: "-i, -si" },
-        { type: "select", question: "1:217. I shaxs ko'plik egalik qo'shimchasi qaysi?", options: ["-imiz, -miz", "-ingiz", "-lari", "-im"], correctAnswer: "-imiz, -miz" },
-        { type: "select", question: "1:218. II shaxs ko'plik egalik qo'shimchasi qaysi?", options: ["-ingiz, -ngiz", "-imiz", "-lari", "-ing"], correctAnswer: "-ingiz, -ngiz" },
-        { type: "select", question: "1:219. III shaxs ko'plik egalik qo'shimchasi qaysi?", options: ["-lari / -i, -si", "-imiz", "-ingiz", "-miz"], correctAnswer: "-lari / -i, -si" },
-        { type: "select", question: "1:220. Kelishiklar necha turga bo'linadi?", options: ["Belgili va belgisiz", "Sodda va murakkab", "Asliy va nisbiy", "Jonli va jonsiz"], correctAnswer: "Belgili va belgisiz" },
-        { type: "select", question: "1:221. \"Kitobim\" so'zidagi qo'shimcha turi qaysi?", options: ["Egalik qo'shimchasi", "Kelishik qo'shimchasi", "Ko'plik qo'shimchasi", "Söz yasovchi"], correctAnswer: "Egalik qo'shimchasi" },
-        { type: "select", question: "1:222. \"Dafgarning\" so'zi qaysi kelishikda?", options: ["Qaratqich kelishigi", "Tushum kelishigi", "Jo'nalish kelishigi", "O'rin-payt kelishigi"], correctAnswer: "Qaratqich kelishigi" },
-        { type: "select", question: "1:223. \"Maktabni\" so'zi qaysi kelishikda?", options: ["Tushum kelishigi", "Bosh kelishik", "Qaratqich kelishigi", "Chiqish kelishigi"], correctAnswer: "Tushum kelishigi" },
-        { type: "select", question: "1:224. \"Uyni\" so'zi qaysi kelishikda?", options: ["Tushum kelishigi", "Jo'nalish kelishigi", "O'rin-payt kelishigi", "Chiqish kelishigi"], correctAnswer: "Tushum kelishigi" },
-        { type: "select", question: "1:225. \"Kasalxonaga\" so'zi qaysi kelishikda?", options: ["Jo'nalish kelishigi", "O'rin-payt kelishigi", "Chiqish kelishigi", "Bosh kelishik"], correctAnswer: "Jo'nalish kelishigi" },
-        { type: "select", question: "1:226. \"Xonada\" so'zi qaysi kelishikda?", options: ["O'rin-payt kelishigi", "Chiqish kelishigi", "Jo'nalish kelishigi", "Qaratqich kelishigi"], correctAnswer: "O'rin-payt kelishigi" },
-        { type: "select", question: "1:227. \"Dorixonadan\" so'zi qaysi kelishikda?", options: ["Chiqish kelishigi", "O'rin-payt kelishigi", "Jo'nalish kelishigi", "Tushum kelishigi"], correctAnswer: "Chiqish kelishigi" },
-        { type: "select", question: "1:228. Ko'plik qo'shimchasi qaysi?", options: ["-lar", "-imiz", "-ning", "-da"], correctAnswer: "-lar" },
-        { type: "select", question: "1:229. Olmosh so'z turkumi nimani bildiradi?", options: ["Ot, sifat, son o'rnida qo'llaniladi", "Narsaning nomini", "Narsaning belgisini", "Ish-harakatni"], correctAnswer: "Ot, sifat, son o'rnida qo'llaniladi" },
-        { type: "select", question: "1:230. Kishilik olmoshlarini ko'rsating.", options: ["Men, sen, u, biz, siz, ular", "Bu, shu, o'sha", "Kim? Nima?", "Hamma, barcha"], correctAnswer: "Men, sen, u, biz, siz, ular" },
-        { type: "select", question: "1:231. Ko'rsatish olmoshlarini ko'rsating.", options: ["Bu, shu, o'sha, ana u", "Men, sen, u", "O'zi", "Kimdir, nimadir"], correctAnswer: "Bu, shu, o'sha, ana u" },
-        { type: "select", question: "1:232. O'zlik olmoshi qaysi?", options: ["O'z", "Hamma", "Hech kim", "Siz"], correctAnswer: "O'z" },
-        { type: "select", question: "1:233. Guronlik olmoshlarini ko'rsating.", options: ["Kim? Nima? Qachon? Qayer?", "Men, sen", "Bu, shu", "Barcha, hamma"], correctAnswer: "Kim? Nima? Qachon? Qayer?" },
-        { type: "select", question: "1:234. Belgilash olmoshlarini ko'rsating.", options: ["Hamma, barcha, bari, har bir", "Hech kim, hech nima", "Kimdir, allakim", "Men, biz"], correctAnswer: "Hamma, barcha, bari, har bir" },
-        { type: "select", question: "1:235. Bo'lishsizlik olmoshlarini ko'rsating.", options: ["Hech kim, hech nima, hech qayer", "Kimdir, nimadir", "O'z", "Bu, shu"], correctAnswer: "Hech kim, hech nima, hech qayer" },
-        { type: "select", question: "1:236. Gumon olmoshlarini ko'rsating.", options: ["Kimdir, nimadir, allakim", "Hamma, barcha", "Hech kim", "Men, sen"], correctAnswer: "Kimdir, nimadir, allakim" },
-        { type: "select", question: "1:237. Fe'l so'z turkumi qanday so'roqlarga javob bo'ladi?", options: ["Nima qildi? Nima qilyapti? Nima qiladi?", "Kim? Nima?", "Qanday? Qanaqa?", "Nechta? Nechanchi?"], correctAnswer: "Nima qildi? Nima qilyapti? Nima qiladi?" },
-        { type: "select", question: "1:238. Fe'llar zamonga ko'ra necha turga bo'linadi?", options: ["3 turga", "2 turga", "4 turga", "5 turga"], correctAnswer: "3 turga" },
-        { type: "select", question: "1:239. O'tgan zamon fe'lining qo'shimchasi qaysi?", options: ["-di, -gan", "-yapti, -moqda", "-ar, -ajak", "-sa"], correctAnswer: "-di, -gan" },
-        { type: "select", question: "1:240. Hozirgi zamon fe'lining qo'shimchasi qaysi?", options: ["-yapti, -moqda, -moqdash", "-di", "-gan", "-ar"], correctAnswer: "-yapti, -moqda, -moqdash" },
-        { type: "select", question: "1:241. Kelgusi zamon fe'lining qo'shimchasi qaysi?", options: ["-ar / -mas, -ajak", "-di", "-yapti", "-gan"], correctAnswer: "-ar / -mas, -ajak" },
-        { type: "select", question: "1:242. Ravish so'z turkumi nimani bildiradi?", options: ["Harakatning belgisini, usulini, vaqtini", "Narsaning nomini", "Narsaning miqdorini", "Narsaning rangini"], correctAnswer: "Harakatning belgisini, usulini, vaqtini" },
-        { type: "select", question: "1:243. Ravishlar ma'nosiga ko'ra necha turga bo'linadi?", options: ["4 turga", "3 turga", "5 turga", "6 turga"], correctAnswer: "4 turga" },
-        { type: "select", question: "1:244. Holat ravishlarini ko'rsating.", options: ["Tez, asta, sekin, piyoda", "Bugun, kecha, ertaga", "Ko'p, kam, pcha", "Uydan, maktabdan"], correctAnswer: "Tez, asta, sekin, piyoda" },
-        { type: "select", question: "1:245. Payt ravishlarini ko'rsating.", options: ["Bugun, ertaga, kecha, hozir", "Uzoq, yaqin", "Kam, mo'l", "Yaxshi, yomon"], correctAnswer: "Bugun, ertaga, kecha, hozir" },
-        { type: "select", question: "1:246. O'rin ravishlarini ko'rsating.", options: ["Yaqin, uzoq, oldinga, orqaga", "Sekin, tez", "Ertaga, hozir", "Ko'p, oz"], correctAnswer: "Yaqin, uzoq, oldinga, orqaga" },
-        { type: "select", question: "1:247. Miqdor-daraja ravishlarini ko'rsating.", options: ["Ko'p, oz, kam, juda, pcha", "Tez, sekin", "Kecha, bugun", "Uzoq, yaqin"], correctAnswer: "Ko'p, oz, kam, juda, pcha" },
-        { type: "select", question: "1:248. Ko'makchilar nimaga xizmat qiladi?", options: ["So'zlarni o'zaro bog'lashga", "Gaplarni ajratishga", "Yangi so'z yasashga", "Harakatni bildirishga"], correctAnswer: "So'zlarni o'zaro bog'lashga" },
-        { type: "select", question: "1:249. Sof ko'makchilarni ko'rsating.", options: ["Bilan, uchun, kabi, sayin, sari", "Keyin, oldin", "Tashqari, boshqa", "Qarab, ko'ra"], correctAnswer: "Bilan, uchun, kabi, sayin, sari" },
-        { type: "select", question: "1:250. Bog'lovchilar vazifasi nima?", options: ["Gap bo'laklari va qo'shma gaplarni bog'laydi", "So'z ma'nosini o'zgartiradi", "Hissiyotni bildiradi", "Sörroq bildiradi"], correctAnswer: "Gap bo'laklari va qo'shma gaplarni bog'laydi" },
-        { type: "select", question: "1:251. Teng bog'lovchilarni ko'rsating.", options: ["Va, hamda, lekin, biroq, ammo", "Chunki, agarda", "Go'yo, xuddi", "Ya'ni, zero"], correctAnswer: "Va, hamda, lekin, biroq, ammo" },
-        { type: "select", question: "1:252. Yuklamalar qanday vazifani bajaradi?", options: ["So'z yoki gapga qo'shimcha ma'no beradi", "So'zlarni bog'laydi", "Egalikni bildiradi", "Vaqtni bildiradi"], correctAnswer: "So'z или gapga qo'shimcha ma'no beradi" },
-        { type: "select", question: "1:253. So'roq yuklamalarini ko'rsating.", options: ["-mi, -chi, -a, -ya", "Faqat, gina", "Ham, hatto", "Xuddi, go'yo"], correctAnswer: "-mi, -chi, -a, -ya" },
-        { type: "select", question: "1:254. Ayruv yuklamalarini ko'rsating.", options: ["Faqat, gina, faqatgina", "-mi, -chi", "Hatto, ham", "Axir, axirchi"], correctAnswer: "Faqat, gina, faqatgina" },
-        { type: "select", question: "1:255. Kuchaytiruv yuklamalarini ko'rsating.", options: ["Ham, hatto, -da, -oq, -yoq", "Faqat", "-mi", "Go'yo"], correctAnswer: "Ham, hatto, -da, -oq, -yoq" },
-        { type: "select", question: "1:256. O'zbek tilida gap bo'laklari nechaga bo'linadi?", options: ["2 turga (Bosh va ikkinchi darajali)", "3 turga", "4 turga", "Bo'linmaydi"], correctAnswer: "2 turга (Bosh va ikkinchi darajali)" },
-        { type: "select", question: "1:257. Gapning bosh bo'laklari qaysilar?", options: ["Ega va kesim", "To'ldiruvchi va hol", "Aniqlovchi va ega", "Kesim va hol"], correctAnswer: "Ega va kesim" },
-        { type: "select", question: "1:258. Ega qanday so'roqlarga javob bo'ladi?", options: ["Kim? Nima? Qayer?", "Nima qildi?", "Qanday? Qanaqa?", "Qachon? Qayerda?"], correctAnswer: "Kim? Nima? Qayer?" },
-        { type: "select", question: "1:259. Kesim qanday so'roqlarga javob bo'ladi?", options: ["Nima qildi? Kimdir? Qanday?", "Kim? Nima?", "Qayerda?", "Qancha?"], correctAnswer: "Nima qildi? Kimdir? Qanday?" },
-        { type: "select", question: "1:260. Gapning ikkinchi darajali bo'laklari qaysilar?", options: ["Aniqlovchi, to'ldiruvchi, hol", "Ega, kesim, hol", "Aniqlovchi, ega", "To'ldiruvchi, kesim"], correctAnswer: "Aniqlovchi, to'ldiruvchi, hol" },
-        { type: "select", question: "1:261. Aniqlovchi qanday so'roqlarga javob bo'ladi?", options: ["Qanday? Qanaqa? Qaysi? Kimning? Nimaning?", "Kimni? Nimani?", "Qachon? Qayerga?", "Nima qildi?"], correctAnswer: "Qanday? Qanaqa? Qaysi? Kimning? Nimaning?" },
-        { type: "select", question: "1:262. To'ldiruvchi qanday so'roqlarga javob bo'ladi?", options: ["Kimni? Nimani? Kimga? Nimaga? Kimdan? Nimadan?", "Qanday? Qanaqa?", "Qachon? Qayerda?", "Kim? Nima?"], correctAnswer: "Kimni? Nimani? Kimga? Nimaga? Kimdan? Nimadan?" },
-        { type: "select", question: "1:263. Hol qanday so'roqlarga javob bo'ladi?", options: ["Qachon? Qayerda? Qanday? Qanchaga?", "Kim? Nima?", "Kimning? Nimaning?", "Nima qildi?"], correctAnswer: "Qachon? Qayerda? Qanday? Qanchaga?" },
-        { type: "select", question: "1:264. Gap ma'no va maqsadiga ko'ra necha turga bo'linadi?", options: ["4 turga (Darak, so'roq, buyruq, istak)", "3 turga", "2 turga", "5 turga"], correctAnswer: "4 turga (Darak, so'roq, buyruq, istak)" },
-        { type: "select", question: "1:265. Gap tuzilishiga ko'ra necha turga bo'linadi?", options: ["Sodda va qo'shma gaplar", "Darak va so'roq gaplar", "Egalik va kesimli gaplar", "To'liq va to'liqsiz gaplar"], correctAnswer: "Sodda va qo'shma gaplar" },
-        { type: "select", question: "1:266. Sodda gap nima?", options: ["Faqat bitta gramatika asosga (ega-kesimga) ega gap", "Ikki yoki undan ortiq qismli gap", "Egasiz gap", "Faqat undovdan iborat gap"], correctAnswer: "Faqat bitta gramatika asosga (ega-kesimga) ega gap" },
-        { type: "select", question: "1:267. Qo'shma gap nima?", options: ["Ikki yoki undan ortiq sodda gapning bog'lanishi", "Bitta egasi bor gap", "Faqat sifatlardan iborat gap", "So'roq gapi"], correctAnswer: "Ikki yoki undan ortiq sodda gapning bog'lanishi" },
-        { type: "select", question: "1:268. \"Men talabaman.\" gapi maqsada ko'ra qanday gap?", options: ["Darak gap", "So'roq gap", "Buyruq gap", "Istak gap"], correctAnswer: "Darak gap" },
-        { type: "select", question: "1:269. \"Siz kimsiz?\" gapi maqsada ko'ra qanday gap?", options: ["So'roq gap", "Darak gap", "Buyruq gap", "Undov gap"], correctAnswer: "So'roq gap" },
-        { type: "select", question: "1:270. \"Kitobni o'qi!\" gapi maqsada ko'ra qanday gap?", options: ["Buyruq gap", "Darak gap", "So'roq gap", "Istak gap"], correctAnswer: "Buyruq gap" },
-        { type: "select", question: "1:271. \"Yaxshi shifokor bo'lmoqchiman.\" gapi qanday gap?", options: ["Istak / istak-orzu gapi", "Buyruq gap", "So'roq gap", "Qo'shma gap"], correctAnswer: "Istak / istak-orzu gapi" },
-        { type: "select", question: "1:272. Gapda ega ostiga qanday chiziq chiziladi?", options: ["Bitta to'g'ri chiziq", "Ikkita to'g'ri chiziq", "To'lqinli chiziq", "Nuqta-punktir chiziq"], correctAnswer: "Bitta to'g'ri chiziq" },
-        { type: "select", question: "1:273. Gapda kesim ostiga qanday chiziq chiziladi?", options: ["Ikkita to'g'ri chiziq", "Bitta to'g'ri chiziq", "To'lqinli chiziq", "Siniq chiziq"], correctAnswer: "Ikkita to'g'ri chiziq" },
-        { type: "select", question: "1:274. Gapda aniqlovchi ostiga qanday chiziq chiziladi?", options: ["To'lqinli chiziq", "Bitta to'g'ri chiziq", "Ikkita to'g'ri chiziq", "Nuqta-punktir chiziq"], correctAnswer: "To'lqinli chiziq" },
-        { type: "select", question: "1:275. Gapda to'ldiruvchi ostiga qanday chiziq chiziladi?", options: ["Uzun-uzun (punktir) chiziq", "To'lqinli chiziq", "Ikkita chiziq", "To'g'ri chiziq"], correctAnswer: "Uzun-uzun (punktir) chiziq" },
-        { type: "select", question: "1:276. Gapda hol ostiga qanday chiziq chiziladi?", options: ["Nuqta-punktir chiziq", "To'lqinli chiziq", "Ikkita chiziq", "To'g'ri chiziq"], correctAnswer: "Nuqta-punktir chiziq" },
-        { type: "select", question: "1:277. Sinonim so'zlar nima?", options: ["Yozilishi har xil, ma'nosi bir xil so'zlar", "Yozilishi bir xil, ma'nosi har xil", "Zid ma'noli so'zlar", "Yangi paydo bo'lgan so'zlar"], correctAnswer: "Yozilishi har xil, ma'nosi bir xil so'zlar" },
-        { type: "select", question: "1:278. Antonim so'zlar nima?", options: ["Zid (teskari) ma'noli so'zlar", "Ma'nodosh so'zlar", "Yozilishi bir xil so'zlar", "Eski so'zlar"], correctAnswer: "Zid (teskari) ma'noli so'zlar" },
-        { type: "select", question: "1:279. Omonim so'zlar nima?", options: ["Yozilishi bir xil, ma'nosi har xil so'zlar", "Zid ma'noli so'zlar", "Tarixiy so'zlar", "Tarjima qilinmaydigan so'zlar"], correctAnswer: "Yozilishi bir xil, ma'nosi har xil so'zlar" },
-        { type: "select", question: "1:280. Paronim so'zlar nima?", options: ["Aytilishi va yozilishi yaqin, lekin ma'nosi har xil so'zlar", "Ma'nosi bir xil so'zlar", "Teskari so'zlar", "Ko'p ma'noli so'zlar"], correctAnswer: "Aytilishi va yozilishi yaqin, lekin ma'nosi har xil so'zlar" },
-        { type: "select", question: "1:281. Neologizm nima?", options: ["Yangi paydo bo'lgan so'zlar", "Eski so'zlar", "Zid so'zlar", "Sheva so'zlari"], correctAnswer: "Yangi paydo bo'lgan so'zlar" },
-        { type: "select", question: "1:282. Arxaizm nima?", options: ["Iste'moldan chiqqan eski so'zlar", "Yangi so'zlar", "Tibbiy atamalar", "Chet tildan kirgan so'zlar"], correctAnswer: "Iste'moldan chiqqan eski so'zlar" },
-        { type: "select", question: "1:283. Sinonimlarni ko'rsating.", options: ["Chiroyli, go'zal, xushro'y", "Katta, kichik", "Kala, ko'z", "Oq, qora"], correctAnswer: "Chiroyli, go'zal, xushro'y" },
-        { type: "select", question: "1:284. Antonimlarni ko'rsating.", options: ["Baland, past", "Katta, ulkan", "Yaxshi, soz", "Qizil, nordon"], correctAnswer: "Baland, past" },
-        { type: "select", question: "1:285. Omonimlarni ko'rsating.", options: ["Ot (hayvon) / Ot (fe'l)", "Yuz, chehra", "Issiq, sovuq", "Shirin, nordon"], correctAnswer: "Ot (hayvon) / Ot (fe'l)" },
-        { type: "select", question: "1:286. Paronimlarni ko'rsating.", options: ["Sodda (sada) / Sado", "Yaxshi, yomon", "Uydan, uyingiz", "Yugurdi, chopdi"], correctAnswer: "Sodda (sada) / Sado" },
-        { type: "select", question: "1:287. Ibora (Frazeologizm) nima?", options: ["Ko'chma ma'nodagi turg'un so'z birikmasi", "Sodda gap", "Kelishik qo'shimchasi", "Yangi so'z"], correctAnswer: "Ko'chma ma'nodagi turg'un so'z birikmasi" },
-        { type: "select", question: "1:288. \"Yuragi bo'g'ziga keldi\" iborasi ma'nosi nima?", options: ["Qattiq qo'rqdi", "Xursand bo'ldi", "Xafa bo'ldi", "Charchadi"], correctAnswer: "Qattiq qo'rqdi" },
-        { type: "select", question: "1:289. \"Tili uzun\" iborasi ma'nosi nima?", options: ["Aybdorligi yo'q, beayb, g'olib", "Ko'p gapiradigan", "Kasal odam", "Yolg'onchi"], correctAnswer: "Aybdorligi yo'q, beayb, g'olib" },
-        { type: "select", question: "1:290. \"Tepasiga kelmoq\" iborasi ma'nosi nima?", options: ["Yaqinlashmoq, kelib qolmoq", "Uxlash", "Yordam berish", "Urmoq"], correctAnswer: "Yaqinlashmoq, kelib qolmoq" },
-        { type: "select", question: "1:291. \"Ko'z yummoq\" iborasi ma'nosi nima?", options: ["Vafot etmoq yoki e'tibor bermaslik", "Uxlamoq", "Yig'lamoq", "Ko'rish"], correctAnswer: "Vafot etmoq yoki e'tibor bermaslik" },
-        { type: "select", question: "1:292. \"O'pkasi to'lmoq\" iborasi ma'nosi nima?", options: ["Yig'lamoqdan berib qolmoq, xafa bo'lmoq", "Nafas ololmaslik", "Kkulmoq", "Yugurmoq"], correctAnswer: "Yig'lamoqdan berib qolmoq, xafa bo'lmoq" },
-        { type: "select", question: "1:293. Tasviriy ifoda nima?", options: ["Narsaning nomini to'g'ridan-to'g'ri aytmay, tasvirlab aytish", "Rasm chizish", "Sifatlash", "Antonim"], correctAnswer: "Narsaning nomini to'g'ridan-to'g'ri aytmay, tasvirlab aytish" },
-        { type: "select", question: "1:294. \"Oq oltin\" tasviriy ifodasi nimani bildiradi?", options: ["Paxta", "Guruch", "Tuz", "Sut"], correctAnswer: "Paxta" },
-        { type: "select", question: "1:295. \"Qora oltin\" tasviriy ifodasi nimani bildiradi?", options: ["Neft / Ko'mir", "Paxta", "Temir", "Tuproq"], correctAnswer: "Neft / Ko'mir" },
-        { type: "select", question: "1:296. \"Zangori kema\" tasviriy ifodasi nimani bildiradi?", options: ["Kosmik kema", "Samolyot", "Traktor", "Televizor"], correctAnswer: "Televizor" },
-        { type: "select", question: "1:297. \"Sahro kemasi\" tasviriy ifodasi qaysi hayvonga nisbatan ishlatiladi?", options: ["Tuya", "Ot", "Eshak", "Arslon"], correctAnswer: "Tuya" },
-        { type: "select", question: "1:298. \"O'rmon podshohi\" tasviriy ifodasi qaysi hayvonga tegishli?", options: ["Arslon", "Ayiq", "Bo'ri", "Yo'lbars"], correctAnswer: "Arslon" },
-        { type: "select", question: "1:299. Biriktiruvchi to'qima o'zbek tilida qanday nomlanadi?", options: ["Biriktiruvchi to'qimasi", "Mushak to'qimasi", "Asab to'qimasi", "Epiteliy to'qimasi"], correctAnswer: "Biriktiruvchi to'qimasi" },
-        { type: "select", question: "1:300. Epiteliy to'qimasi tanada qayerda joylashgan?", options: ["Teri va a'zolarning tashqi qavatida", "Suyaklarda", "Mushaklarda", "Miyada"], correctAnswer: "Teri va a'zolarning tashqi qavatida" },
-        { type: "select", question: "1:301. To'qimalar necha turga bo'linadi?", options: ["4 turga (Epiteliy, biriktiruvchi, mushak, asab)", "3 turga", "2 turga", "5 turga"], correctAnswer: "4 turga (Epiteliy, biriktiruvchi, mushak, asab)" },
-        { type: "select", question: "1:302. Organizm tizimi tarkibiga nimalar kiradi?", options: ["A'zolar va to'qimalar", "Faqat suyaklar", "Faqat qon", "Faqat teri"], correctAnswer: "A'zolar va to'qimalar" },
-        { type: "select", question: "1:303. O'zbek tilida urg'u odatda so'zning qaysi bo'g'iniga tushadi?", options: ["Oxirgi bo'g'inga", "Birinchi bo'g'inga", "O'rtadagi bo'g'inga", "Tushmaydi"], correctAnswer: "Oxirgi bo'g'inga" },
-        { type: "select", question: "1:304. Bo'g'in nima?", options: ["Bir havo zarbi bilan aytiladigan tovush yoki tovushlar guruhi", "So'z birikmasi", "Harflar yig'indisi", "Gap bo'lagi"], correctAnswer: "Bir havo zarbi bilan aytiladigan tovush yoki tovushlar guruhi" },
-        { type: "select", question: "1:305. O'zbek tilida nechta unli harf bor?", options: ["6 ta", "10 ta", "5 ta", "8 ta"], correctAnswer: "6 ta" },
-        { type: "select", question: "1:306. O'zbek tilida unli tovushlar soni nechta?", options: ["6 ta", "5 ta", "7 ta", "9 ta"], correctAnswer: "6 ta" },
-        { type: "select", question: "1:307. Undosh harflar soni nechta?", options: ["23 ta (24 ta tovush)", "21 ta", "25 ta", "20 ta"], correctAnswer: "23 ta (24 ta tovush)" },
-        { type: "select", question: "1:308. O'zbek tilida \"sh\" va \"ch\" qanday harflar hisoblanadi?", options: ["Harflar birikmasi (Digraf)", "Alohida tovush emas", "Unli harf", "Belgi"], correctAnswer: "Harflar birikmasi (Digraf)" },
-        { type: "select", question: "1:309. Tutuq belgisi (') vazifasi nima?", options: ["Tovushni ajratib va cho'zib aytish uchun xizmat qiladi", "Urg'u bildiradi", "Egalikni bildiradi", "Savol bildiradi"], correctAnswer: "Tovushni ajratib va cho'zib aytish uchun xizmat qiladi" },
-        { type: "select", question: "1:310. Juft so'zlarni ko'rsating.", options: ["Aka-uka, ota-ona, kecha-kunduz", "Katta-katta, qizil-qizil", "Yaxshi shifokor", "Dorixona xodimi"], correctAnswer: "Aka-uka, ota-ona, kecha-kunduz" },
-        { type: "select", question: "1:311. Takroriy so'zlarni ko'rsating.", options: ["Katta-katta, sekin-sekin, ko'p-ko'p", "Ota-ona", "Ggo'zal qiz", "Yugurib keldi"], correctAnswer: "Katta-katta, sekin-sekin, ko'p-ko'p" },
-        { type: "select", question: "1:312. Qisqartma so'zlar qaysi bandda berilgan?", options: ["OTM, ToshPTI, BMT, AQSH", "Institut, universitet", "Shifokor, hamshira", "Viloyat, shahar"], correctAnswer: "OTM, ToshPTI, BMT, AQSH" },
-        { type: "select", question: "1:313. Qo'shma otlar qanday yoziladi?", options: ["Qo'shib yoki chiziqcha bilan", "Faqat alohida", "Faqat bosh harf bilan", "Yozilmaydi"], correctAnswer: "Qo'shib yoki chiziqcha bilan" },
-        { type: "select", question: "1:314. \"Oshqozon\" so'zi qanday so'z tarkibiga kiradi?", options: ["Qo'shma so'z (ot)", "Sodda so'z", "Juft so'z", "Takroriy so'z"], correctAnswer: "Qo'shma so'z (ot)" },
-        { type: "select", question: "1:315. \"Yurak-qon tomir\" so'zi qanday yoziladi?", options: ["Chiziqcha (defis) bilan", "Qo'shib", "Alohida", "Bosh harf bilan"], correctAnswer: "Chiziqcha (defis) bilan" },
-        { type: "select", question: "1:316. Matn nima?", options: ["Mazmunan va gramatik bog'langan gaplar guruhi", "Iboralar to'plami", "Alohida so'zlar", "Lug'at"], correctAnswer: "Mazmunan va gramatik bog'langan gaplar guruhi" },
-        { type: "select", question: "1:317. Matnning asosiy qismlari qaysilar?", options: ["Kirish, asosiy qism, xulosa", "Ega va kesim", "Sarlavha va nuqta", "Abzas va qavs"], correctAnswer: "Kirish, asosiy qism, xulosa" },
-        { type: "select", question: "1:318. Nutq uslublari nechaga bo'linadi?", options: ["5 ta asosiy uslub bor", "3 ta", "4 ta", "6 ta"], correctAnswer: "5 ta asosiy uslub bor" },
-        { type: "select", question: "1:319. Tibbiy darsliklar va maqolalar qaysi uslubda yoziladi?", options: ["Ilmiy uslubda", "Rasmiy uslubda", "Badiiy uslubda", "Publisistik uslubda"], correctAnswer: "Ilmiy uslubda" },
-        { type: "select", question: "1:320. Kasalxona hujjatlari va buyruqlar qaysi uslubga kiradi?", options: ["Rasmiy-idoraviy uslub", "Ilmiy uslub", "So'zlashuv uslubi", "Badiiy uslub"], correctAnswer: "Rasmiy-idoraviy uslub" },
-        { type: "select", question: "1:321. Gazeta va jurnallardagi maqolalar qaysi uslubda bo'ladi?", options: ["Publisistik uslub", "Ilmiy uslub", "Rasmiy uslub", "Badiiy uslub"], correctAnswer: "Publisistik uslub" },
-        { type: "select", question: "1:322. Roman va hikoyalar qaysi uslubda yoziladi?", options: ["Badiiy uslub", "Ilmiy uslub", "Rasmiy uslub", "So'zlashuv uslubi"], correctAnswer: "Badiiy uslub" },
-        { type: "select", question: "1:323. Kundalik hayotda odamlar o'zaro qaysi uslubda gaplashadi?", options: ["So'zlashuv uslubi", "Ilmiy uslub", "Badiiy uslub", "Rasmiy uslub"], correctAnswer: "So'zlashuv uslubi" },
-        { type: "select", question: "1:324. Ilmiy uslubning asosiy xususiyati nima?", options: ["Anriqlik, mantiqiylik va atamalardan foydalanish", "Hissiyotga boylik", "Qisqartmalar ko'pligi", "Erkin so'zlashuv"], correctAnswer: "Anriqlik, mantiqiylik va atamalardan foydalanish" },
-        { type: "select", question: "1:325. Rasmiy uslubning xususiyati nima?", options: ["Standart shakllar va qat'iylik", "Ko'chma ma'noli so'zlar", "Sheva so'zlari", "Mubolag'a"], correctAnswer: "Standart shakllar va qat'iylik" },
-        { type: "select", question: "1:326. Badiiy uslubda nimalardan keng foydalaniladi?", options: ["Tasviriy vositalar, ko'chma ma'nolar va iboralardan", "Atamalardan", "Qonunlardan", "Raqamlardan"], correctAnswer: "Tasviriy vositalar, ko'chma ma'nolar va iboralardan" },
-        { type: "select", question: "1:327. Egalik qo'shimchasi mavjud so'zni toping.", options: ["Uyim", "Maktabdan", "Kitobni", "Yozdi"], correctAnswer: "Uyim" },
-        { type: "select", question: "1:328. Kelishik qo'shimchali so'zni toping.", options: ["Ukaga", "Dafgaring", "Bolalar", "Yaxshi"], correctAnswer: "Ukaga" },
-        { type: "select", question: "1:329. Ko'plik qo'shimchasi bor so'zni aniqlang.", options: ["Shifokorlar", "Dori", "Singlim", "Toshkentda"], correctAnswer: "Shifokorlar" },
-        { type: "select", question: "1:330. Kishilik olmoshi bor gap qaysi?", options: ["Men institutda o'qiyman.", "Bu kitob yangi.", "Hamma keldi.", "O'zimiz bajardik."], correctAnswer: "Men institutda o'qiyman." },
-        { type: "select", question: "1:331. Ko'rsatish olmoshi bor gap qaysi?", options: ["Shu shifoxona juda katta.", "Biz keldik.", "Hech kim yo'q.", "Kim keldi?"], correctAnswer: "Shu shifoxona juda katta." },
-        { type: "select", question: "1:332. O'tgan zamon fe'li bor gap qaysi?", options: ["U shifokor bo'ldi.", "Men o'qiyapman.", "Ertaga keladi.", "Dars boshlanadi."], correctAnswer: "U shifokor bo'ldi." },
-        { type: "select", question: "1:333. Hozirgi zamon fe'li bor gap qaysi?", options: ["Hamshira dori beryapti.", "U keldi.", "O'qiydi.", "Dori tayyorlandi."], correctAnswer: "Hamshira dori beryapti." },
-        { type: "select", question: "1:334. Kelgusi zamon fe'li bor gap qaysi?", options: ["Ertaga imtihon topshiramiz.", "Kecha o'qidim.", "Hozir yozyapti.", "Tugatdim."], correctAnswer: "Ertaga imtihon topshiramiz." },
-        { type: "select", question: "1:335. Payt ravishi bor gapni toping.", options: ["Bugun ob-havo yaxshi.", "U sekin yuradi.", "Ko'p gapirma.", "Oldinga yur."], correctAnswer: "Bugun ob-havo yaxshi." },
-        { type: "select", question: "1:336. Holat ravishi bor gapni toping.", options: ["Talaba tez gapirdi.", "Ertaga kelamiz.", "Uzoqqa ketdi.", "Ozgina dam ol."], correctAnswer: "Talaba tez gapirdi." },
-        { type: "select", question: "1:337. O'rin ravishi bor gapni aniqlang.", options: ["U orqaga qaradi.", "Hozir dars.", "Yaxshi o'qi.", "Ko'p ishladi."], correctAnswer: "U orqaga qaradi." },
-        { type: "select", question: "1:338. Miqdor ravishi bor gap qaysi?", options: ["U bugun juda ko'p o'qidi.", "Asta yurdi.", "Kecha keldi.", "Yaqinda turadi."], correctAnswer: "U bugun juda ko'p o'qidi." },
-        { type: "select", question: "1:339. Sof ko'makchi qatnashgan gap qaysi?", options: ["Siz uchun dori tayyorladim.", "Keyin kelaman.", "Tashqariga chiqdi.", "Uyga qarab yurdi."], correctAnswer: "Siz uchun dori tayyorladim." },
-        { type: "select", question: "1:340. Bog'lovchi qatnashgan gap qaysi?", options: ["Anvar va Shaxzod talabalar.", "Men ham boraman.", "Faqat sen qolding.", "Keldilarmi?"], correctAnswer: "Anvar va Shaxzod talabalar." },
-        { type: "select", question: "1:341. Yuklama qatnashgan gap qaysi?", options: ["Siz ham kelasizmi?", "Kitob va daftar.", "U institutga ketdi.", "Dars tugadi."], correctAnswer: "Siz ham kelasizmi?" },
-        { type: "select", question: "1:342. Gapda ega vazifasidagi so'zni toping: \"Shifokor bemorni davoladi.\"", options: ["Shifokor", "Bemorni", "Davoladi", "Ega yo'q"], correctAnswer: "Shifokor" },
-        { type: "select", question: "1:343. Gapda kesimni aniqlang: \"Biz imtihon topshiryapmiz.\"", options: ["Topshiryapmiz", "Biz", "Imtihon", "Asos yo'q"], correctAnswer: "Topshiryapmiz" },
-        { type: "select", question: "1:344. Gapda aniqlovchini toping: \"Yangi shifoxona ochildi.\"", options: ["Yangi", "Shifoxona", "Ochildi", "Yo'q"], correctAnswer: "Yangi" },
-        { type: "select", question: "1:345. Gapda to'ldiruvchini toping: \"Hamshira ukol qildi.\"", options: ["Ukol", "Hamshira", "Qildi", "Yo'q"], correctAnswer: "Ukol" },
-        { type: "select", question: "1:346. Gapda holni aniqlang: \"U darsga piyoda keldi.\"", options: ["Piyoda", "U", "Darsga", "Keldi"], correctAnswer: "Piyoda" },
-        { type: "select", question: "1:347. Antonim juftlikni toping.", options: ["Katta - kichik", "Ulkan - azim", "Chiroyli - suluv", "Yaxshi - soz"], correctAnswer: "Katta - kichik" },
-        { type: "select", question: "1:348. Sinonim juftlikni toping.", options: ["Fikr - o'y", "Oq - qora", "Keldi - ketdi", "Uzoq - yaqin"], correctAnswer: "Fikr - o'y" },
-        { type: "select", question: "1:349. Omonim so'zni aniqlang.", options: ["Yuz", "Chiroyli", "Kitob", "Talaba"], correctAnswer: "Yuz" },
-        { type: "select", question: "1:350. Paronim juftlikni toping.", options: ["Sodda / Sada", "Katta / Ulkan", "Yaxshi / Yomon", "Shakar / Tuz"], correctAnswer: "Sodda / Sada" },
-        { type: "select", question: "1:351. Frazeologizm (ibora) bor gap qaysi?", options: ["Uning qattiq jahli chiqdi (yuragi bo'g'ziga keldi).", "Men kitob o'qidim.", "U shifokor bo'lib ishlaydi.", "Kasalxona binosi yangi."], correctAnswer: "Uning qattiq jahli chiqdi (yuragi bo'g'ziga keldi)." },
-        { type: "select", question: "1:352. Tasviriy ifoda bor gapni toping.", options: ["Oq oltin karvonlari yo'lga chiqdi.", "Paxta terimi boshlandi.", "O'simliklar foydali.", "Jigar muhim a'zo."], correctAnswer: "Oq oltin karvonlari yo'lga chiqdi." },
-        { type: "select", question: "1:353. Qo'shma ot bor qatorni ko'rsating.", options: ["Oshqozon, qon-tomir", "Yurak, o'pka", "Shifokor, hamshira", "Dori, ukol"], correctAnswer: "Oshqozon, qon-tomir" },
-        { type: "select", question: "1:354. Juft so'z bor qatorni aniqlang.", options: ["Ota-ona, aka-uka", "Katta-katta", "Toshkent shahri", "Oliy ta'lim"], correctAnswer: "Ota-ona, aka-uka" },
-        { type: "select", question: "1:355. Takroriy so'z bor gapni toping.", options: ["Hamshira sekin-sekin yurdi.", "U dori ichdi.", "Ota-onam keldilar.", "Dars boshlandi."], correctAnswer: "Hamshira sekin-sekin yurdi." },
-        { type: "select", question: "1:356. Qisqartma so'z qatnashgan gap qaysi?", options: ["U ToshPTI talabasi.", "Men institutda o'qiyman.", "Shifoxona juda katta.", "Vaksina olindi."], correctAnswer: "U ToshPTI talabasi." },
-        { type: "select", question: "1:357. Tutuq belgili so'zni ko'rsating.", options: ["Mas'uliyat", "Maktab", "Shifokor", "Bemor"], correctAnswer: "Mas'uliyat" },
-        { type: "select", question: "1:358. O'zbek tilida nechta unli harf bor?", options: ["6 ta", "10 ta", "5 ta", "8 ta"], correctAnswer: "6 ta" },
-        { type: "select", question: "1:359. \"Shifokor\" so'zi qaysi so'z turkumiga kiradi?", options: ["Ot", "Sifat", "Fe'l", "Ravish"], correctAnswer: "Ot" },
-        { type: "select", question: "1:360. \"Foydali\" so'zi qaysi so'z turkumiga kiradi?", options: ["Sifat", "Ot", "Son", "Olmosh"], correctAnswer: "Sifat" },
-        { type: "select", question: "1:361. \"Uchta\" so'zi qaysi so'z turkumiga kiradi?", options: ["Son", "Sifat", "Ot", "Fe'l"], correctAnswer: "Son" },
-        { type: "select", question: "1:362. \"Yozmoq\" so'zi qaysi so'z turkumiga kiradi?", options: ["Fe'l", "Ot", "Sifat", "Ravish"], correctAnswer: "Fe'l" },
-        { type: "select", question: "1:363. \"Tez\" so'zi qaysi so'z turkumiga kiradi?", options: ["Ravish", "Ot", "Son", "Olmosh"], correctAnswer: "Ravish" },
-        { type: "select", question: "1:364. \"Ular\" so'zi qaysi so'z turkumiga kiradi?", options: ["Olmosh", "Ot", "Sifat", "Fe'l"], correctAnswer: "Olmosh" },
-        { type: "select", question: "1:365. \"Uchun\" so'zi nima?", options: ["Ko'makchi", "Bog'lovchi", "Yuklama", "Fe'l"], correctAnswer: "Ko'makchi" },
-        { type: "select", question: "1:366. \"Lekin\" so'zi nima?", options: ["Bog'lovchi", "Ko'makchi", "Yuklama", "Ot"], correctAnswer: "Bog'lovchi" },
-        { type: "select", question: "1:367. \"Faqat\" so'zi nima?", options: ["Yuklama", "Bog'lovchi", "Ko'makchi", "Sifat"], correctAnswer: "Yuklama" },
-        { type: "select", question: "1:368. \"Toshkent\" so'zi turi", options: ["Atoqli ot", "Turdoosh ot", "Mavhum ot", "Sifat"], correctAnswer: "Atoqli ot" },
-        { type: "select", question: "1:369. \"Kitob\" so'zi turi", options: ["Turdosh ot", "Atoqli ot", "Mavhum ot", "Son"], correctAnswer: "Turdosh ot" },
-        { type: "select", question: "1:370. \"Baxt\" so'zi turi", options: ["Mavhum ot", "Turdoosh ot", "Atoqli ot", "Sifat"], correctAnswer: "Mavhum ot" },
-        { type: "select", question: "1:371. \"Shirin\" so'zi turi", options: ["Sifat", "Ot", "Son", "Ravish"], correctAnswer: "Sifat" },
-        { type: "select", question: "1:372. \"Besh\" so'zi turi", options: ["Son", "Ot", "Sifat", "Fe'l"], correctAnswer: "Son" },
-        { type: "select", question: "1:373. \"Men\" so'zi turi", options: ["Olmosh", "Ot", "Sifat", "Ravish"], correctAnswer: "Olmosh" },
-        { type: "select", question: "1:374. \"Katta\" so'zi turi", options: ["Sifat", "Ot", "Son", "Olmosh"], correctAnswer: "Sifat" },
-        { type: "select", question: "1:375. \"Biz\" so'zi turi", options: ["Olmosh", "Ot", "Sifat", "Fe'l"], correctAnswer: "Olmosh" },
-        { type: "select", question: "1:376. \"Kichik\" so'zi turi", options: ["Sifat", "Ot", "Son", "Ravish"], correctAnswer: "Sifat" },
-        { type: "select", question: "1:377. \"Choyni\" so'zi turi", options: ["Ot", "Sifat", "Olmosh", "Fe'l"], correctAnswer: "Ot" },
-        { type: "select", question: "1:378. \"Siz\" so'zi turi", options: ["Olmosh", "Ot", "Sifat", "Fe'l"], correctAnswer: "Olmosh" },
-        { type: "select", question: "1:379. \"Institutni\" so'zi turi", options: ["Ot", "Sifat", "Son", "Olmosh"], correctAnswer: "Ot" },
-        { type: "select", question: "1:380. \"Bugun\" so'zi turi", options: ["Ravish", "Ot", "Sifat", "Fe'l"], correctAnswer: "Ravish" },
-        { type: "select", question: "1:381. \"Ertaga\" so'zi turi", options: ["Ravish", "Ot", "Sifat", "Son"], correctAnswer: "Ravish" },
-        { type: "select", question: "1:382. Mavhum otlar qaysi bandda?", options: ["Sevgi, baxt, umid", "Kitob, daftar, qalam", "Toshkent, Samarqand", "Aka, uka, singil"], correctAnswer: "Sevgi, baxt, umid" },
-        { type: "select", question: "1:383. Mavhum otlar qaysi bandda?", options: ["Fikr, orzu, g'oya", "Uydan, maktabda", "Shifokor, bemor", "Dori, vaksina"], correctAnswer: "Fikr, orzu, g'oya" },
-        { type: "select", question: "1:384. Mavhum ot mavjud gap", options: ["\"Baxt insonni quvontiradi.\"", "Men kitob o'qidim.", "U Toshkentga ketdi.", "Dars soat to'qqizda boshlanadi."], correctAnswer: "\"Baxt insonni quvontiradi.\"" },
-        { type: "select", question: "1:385. Mavhum ot mavjud gap", options: ["\"Umid odamni yashatadi.\"", "Shifoxona binosi baland.", "Hamshira ukol qildi.", "Bugun havo issiq."], correctAnswer: "\"Umid odamni yashatadi.\"" },
-        { type: "select", question: "1:386. O'zbek alifbosi haqida to'g'ri ma'lumot", options: ["29 ta harfdan iborat.", "26 ta harfdan iborat.", "30 ta harfdan iborat.", "32 ta harfdan iborat."], correctAnswer: "29 ta harfdan iborat." },
-        { type: "select", question: "1:387. Qaysi kelishik bor?", options: ["Qaratqich kelishigi.", "Bosh kelishik qo'shimchasi bor.", "Kelishiklar 5 ta.", "Tushum kelishigi yo'q."], correctAnswer: "Qaratqich kelishigi." },
-        { type: "select", question: "1:388. Qaysi kelishik bor?", options: ["O'rin-payt kelishigi.", "Chiqish kelishigi yo'q.", "Kelishiklar 8 ta.", "Bosh kelishik qo'shimchali."], correctAnswer: "O'rin-payt kelishigi." }
+        { type: "select", question: "1:200. Ot so'z turkumi qanday so'roqlarga javob bo'ladi?", options: ["Kim? Nima? Qayer?", "Qanday? Qanaqa?", "Nechta? Qancha?", "Nima qildi? Nima qilyapti?"], correctAnswer: "Kim? Nima? Qayer?" }
     ];
 
     let currentStep = 0;
     let userAnswers = new Array(quizQuestions.length).fill(null);
+    let isChecked = false; // Флаг: проверен ли текущий вопрос
 
     function renderQuestion() {
+        isChecked = false;
         const currentQuestion = quizQuestions[currentStep];
+        
         document.getElementById('questionNumber').textContent = `Вопрос ${currentStep + 1} из ${quizQuestions.length}`;
         document.getElementById('questionText').textContent = currentQuestion.question;
 
@@ -579,14 +413,18 @@
         prevBtn.style.opacity = currentStep === 0 ? '0' : '1';
         prevBtn.disabled = currentStep === 0;
 
-        document.getElementById('nextBtn').textContent = currentStep === quizQuestions.length - 1 ? 'Проверить результат' : 'Дальше';
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.textContent = currentStep === quizQuestions.length - 1 ? 'Проверить результат' : 'Дальше';
+        nextBtn.disabled = true; // Блокируем кнопку "Дальше" до момента выбора
 
         const optionsForm = document.getElementById('optionsForm');
+        optionsForm.className = 'options-container'; 
         optionsForm.innerHTML = '';
 
         currentQuestion.options.forEach((option, index) => {
             const optionItem = document.createElement('div');
             optionItem.className = 'option-item';
+            optionItem.id = 'item_' + index;
 
             const input = document.createElement('input');
             input.type = 'radio';
@@ -594,10 +432,26 @@
             input.id = 'opt_' + index;
             input.value = option;
 
-            if (userAnswers[currentStep] === option) input.checked = true;
-
+            // Обработчик МГНОВЕННОГО клика
             input.addEventListener('change', function() {
+                if (isChecked) return; 
+                isChecked = true;
                 userAnswers[currentStep] = this.value;
+
+                // Блокируем форму от повторных кликов
+                optionsForm.classList.add('checked');
+
+                // Подсвечиваем результаты
+                currentQuestion.options.forEach((opt, idx) => {
+                    const item = document.getElementById('item_' + idx);
+                    if (opt === currentQuestion.correctAnswer) {
+                        item.classList.add('correct-answer'); // Правильный - зеленым
+                    } else if (opt === this.value) {
+                        item.classList.add('wrong-answer'); // Неправильный выбор пользователя - красным
+                    }
+                });
+
+                nextBtn.disabled = false; // Разрешаем идти дальше
             });
 
             const label = document.createElement('label');
@@ -612,14 +466,9 @@
     }
 
     function goNext() {
-        if (userAnswers[currentStep] === null) {
-            alert('Пожалуйста, выберите вариант ответа!');
-            return;
-        }
         if (currentStep < quizQuestions.length - 1) {
             currentStep++;
             renderQuestion();
-            // Автоматический плавный скролл наверх к началу нового вопроса
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             showResults();
