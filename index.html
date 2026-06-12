@@ -65,7 +65,6 @@
     </div>
 </div>
 <script>
-    // Сжатая база данных: вопрос, варианты (через | ), индекс правильного ответа (0, 1, 2 или 3)
     const rawData = [
         ["1:1. \"Побочные действие\" so'zi o'zbekchaga Muolaja ta'siri deb tarjima qilinadi.", "Верно|Неверно", 1],
         ["1:2. \"Мышечная ткань\" so'zi o'zbekchaga Mushak to'qimasi deb tarjima qilinadi.", "Верно|Неверно", 0],
@@ -113,29 +112,29 @@
         ["1:44. \"Связь\" so'zi o'zbekchaga Munosabat deb tarjima qilinadi.", "Верно|Неверно", 1],
         ["1:45. \"Снижение\" so'zi o'zbekchaga Kamayish deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:46. \"Создание\" so'zi o'zbekchaga Tashkil etish deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:47. \"Состояние\" so'zi o'zbekchaga Ahvol" deb tarjima qilinadi.", "Верно|Неверно", 0],
+        ["1:47. \"Состояние\" so'zi o'zbekchaga Ahvol deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:48. \"Сохранить\" so'zi o'zbekchaga Asramoq deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:49. \"Способность\" so'zi o'zbekchaga Qobiliyat deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:50. \"Срочно\" so'zi o'zbekchaga Tezda deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:51. \"Стремление\" so'zi o'zbekchaga Harakat" deb tarjima qilinadi.", "Верно|Неверно", 1],
+        ["1:51. \"Стремление\" so'zi o'zbekchaga Harakat deb tarjima qilinadi.", "Верно|Неверно", 1],
         ["1:52. \"Существование\" so'zi o'zbekchaga Mavjudlik deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:53. \"Сфера\" so'zi o'zbekchaga Tarmoq deb tarjima qilinadi.", "Верно|Неверно", 1],
         ["1:54. \"Творчество\" so'zi o'zbekchaga Ijodkorlik deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:55. \"Точка зрения\" iborasi o'zbekchaga Nuqtai nazar deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:56. \"Требование\" so'zi o'zbekchaga Talab deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:57. \"Уважение\" so'zi o'zbekchaga E'tibor" deb tarjima qilinadi.", "Верно|Неверно", 1],
+        ["1:57. \"Уважение\" so'zi o'zbekchaga E'tibor deb tarjima qilinadi.", "Верно|Неверно", 1],
         ["1:58. \"Уверенность\" so'zi o'zbekchaga Ishonch deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:59. \"Условие\" so'zi o'zbekchaga Sharoit deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:60. \"Участвовать\" so'zi o'zbekchaga Qatnashmoq deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:61. \"Ценность\" so'zi o'zbekchaga Boylik deb tarjima qilinadi.", "Верно|Неверно", 1],
         ["1:62. \"Цель\" so'zi o'zbekchaga Maqsad deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:63. \"Часть\" so'zi o'zbekchaga Bo'lim" deb tarjima qilinadi.", "Верно|Неверно", 1],
+        ["1:63. \"Часть\" so'zi o'zbekchaga Bo'lim deb tarjima qilinadi.", "Верно|Неверно", 1],
         ["1:64. \"Чувство\" so'zi o'zbekchaga Tuyg'u deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:65. \"Эффективность\" so'zi o'zbekchaga Samaradorlik deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:66. \"Этап\" so'zi o'zbekchaga Bosqich deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:67. \"Явление\" so'zi o'zbekchaga Hodisa deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:68. \"Понятие\" so'zi o'zbekchaga Tushuncha deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:69. \"Влияние\" so'zi o'zbekchaga Ta'sir" deb tarjima qilinadi.", "Верно|Неверно", 0],
+        ["1:69. \"Влияние\" so'zi o'zbekchaga Ta'sir deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:70. \"Внимание\" so'zi o'zbekchaga Diqqat deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:71. \"Восприятие\" so'zi o'zbekchaga Idrok deb tarjima qilinadi.", "Верно|Неверно", 0],
         ["1:72. \"Воображение\" so'zi o'zbekchaga Tasavvur deb tarjima qilinadi.", "Верно|Неверно", 0],
@@ -225,13 +224,13 @@
         ["1:156. Ruhiy kasalliklarni davolovchi shifokor kim?", "Psixiatriya|Psixolog|Psixoterapevt|Nevrolog", 0],
         ["1:157. Giyohvandlik va alkogolizmga qarshi davolovchi shifokor kim?", "Narkolog|Psixiatr|Toksikolog|Terapevt", 0],
         ["1:158. Sut bezlari kasalliklarini o'rganuvchi shifokor kim?", "Mamolog|Ginekolog|Onkolog|Xirurg", 0],
-        ["1:159. Jarohatlar va suyak sinishlarini davolovchi shifokor kim?", "Travmatolog-ortoped|Xirurg|Vertebrolog|Podiatr", 0],
+        ["1:159. Jarohatlar` va suyak sinishlarini davolovchi shifokor kim?", "Travmatolog-ortoped|Xirurg|Vertebrolog|Podiatr", 0],
         ["1:160. Yuqumli kasalliklarni davolovchi shifokor kim?", "Infeksionist|Epidemiolog|Bakteriolog|Virolog", 0],
         ["1:161. Ovoz buzilishlarini davolovchi mutaxassis kim?", "Foniatr|Logoped|LOR|Surdolog", 0],
         ["1:162. Nutq nuqsonlarini tuzatuvchi mutaxassis kim?", "Logoped|Foniatr|Psixolog|Pediatr", 0],
         ["1:163. Rentgen va KT tasvirlarini tahlil qiluvchi shifokor kim?", "Radiolog (Rentgenolog)|Onkolog|Nevrolog|Uziist", 0],
         ["1:164. Irsiy kasalliklarni o'rganuvchi shifokor kim?", "Genetik|Embriolog|Immunolog|Pediatr", 0],
-        ["1:165. Sud-tibbiy ekspertizasini o'tkazuvchi shifokor kim?", "Sud-tibbiy專|Patologoanatom|Kriminalist|Toksikolog", 0],
+        ["1:165. Sud-tibbiy ekspertizasini o'tkazuvchi shifokor kim?", "Sud-tibbiy ekspert|Patologoanatom|Kriminalist|Toksikolog", 0],
         ["1:166. Murdalarni yorib, o'lim sababini aniqlovchi shifokor kim?", "Patologoanatom|Sud ekspert|Xirurg|Gistolog", 0],
         ["1:167. Sog'lom turmush tarzini targ'ib qiluvchi mutaxassis kim?", "Valeolog|Nutrisiolog|Dietolog|Gigiyenist", 0],
         ["1:168. To'g'ri ovqatlanishni belgilovchi mutaxassis kim?", "Nutrisiolog (Dietolog)|Valeolog|Gastroenterolog|Terapevt", 0],
@@ -287,8 +286,8 @@
         ["1:218. II shaxs ko'plik egalik qo'shimchasi qaysi?", "-ingiz, -ngiz|-imiz|-lari|-ing", 0],
         ["1:219. III shaxs ko'plik egalik qo'shimchasi qaysi?", "-lari / -i, -si|-imiz|-ingiz|-miz", 0],
         ["1:220. Kelishiklar necha turga bo'linadi?", "Belgili va belgisiz|Sodda|Asliy|Jonli", 0],
-        ["1:221. \"Kitobim\" so'zidagi qo'shimcha turi qaysi?", "Egalik qo'shimchasi|Kelishik|Ko'plik|Söz yasovchi", 0],
-        ["1:222. \"Dafgarning\" so'zi qaysi kelishikda?", "Qaratqich kelishigi|Tushum|Jo'nalish|O'rin-payt", 0],
+        ["1:221. \"Kitobim\" so'zidagi qo'shimcha turi qaysi?", "Egalik qo'shimchasi|Kelishik|Ko'plik|So'z yasovchi", 0],
+        ["1:222. \"Daftarning\" so'zi qaysi kelishikda?", "Qaratqich kelishigi|Tushum|Jo'nalish|O'rin-payt", 0],
         ["1:223. \"Maktabni\" so'zi qaysi kelishikda?", "Tushum kelishigi|Bosh|Qaratqich|Chiqish", 0],
         ["1:224. \"Uyni\" so'zi qaysi kelishikda?", "Tushum kelishigi|Jo'nalish|O'rin|Chiqish", 0],
         ["1:225. \"Kasalxonaga\" so'zi qaysi kelishikda?", "Jo'nalish kelishigi|O'rin|Chiqish|Bosh", 0],
@@ -308,14 +307,14 @@
         ["1:239. O'tgan zamon fe'lining qo'shimchasi qaysi?", "-di, -gan|-yapti|-ar|-sa", 0],
         ["1:240. Hozirgi zamon fe'lining qo'shimchasi qaysi?", "-yapti, -moqda|-di|-gan|-ar", 0],
         ["1:241. Kelgusi zamon fe'lining qo'shimchasi qaysi?", "-ar / -mas, -ajak|-di|-yapti|-gan", 0],
-        ["1:242. Ravish so'z turkumi nimani bildiradi?", "Harakatning belgisini, vaqtini|Nomini|Miqdorini|Rangini", 0],
+        ["1:242. Ravishso'z turkumi nimani bildiradi?", "Harakatning belgisini, vaqtini|Nomini|Miqdorini|Rangini", 0],
         ["1:243. Ravishlar ma'nosiga ko'ra necha turga bo'linadi?", "4 turga|3 turga|5 turga|6 turga", 0],
         ["1:244. Holat ravishlarini ko'rsating.", "Tez, asta, sekin, piyoda|Bugun, kecha|Ko'p, kam|Uydan", 0],
         ["1:245. Payt ravishlarini ko'rsating.", "Bugun, ertaga, hozir|Uzoq, yaqin|Kam, mo'l|Yaxshi", 0],
         ["1:246. O'rin ravishlarini ko'rsating.", "Yaqin, uzoq, oldinga|Sekin, tez|Ertaga|Ko'p", 0],
         ["1:247. Miqdor-daraja ravishlarini ko'rsating.", "Ko'p, oz, kam, juda|Tez, sekin|Kecha|Uzoq", 0],
         ["1:248. Ko'makchilar nimaga xizmat qiladi?", "So'zlarni o'zaro bog'lashga|Gaplarni ajratishga|Yangi so'z yasashga|Harakatga", 0],
-        ["1:249. Sof ko'makchilahni ko'rsating.", "Bilan, uchun, kabi, sayin|Keyin, oldin|Tashqari|Qarab", 0],
+        ["1:249. Sof ko'makchilarni ko'rsating.", "Bilan, uchun, kabi, sayin|Keyin, oldin|Tashqari|Qarab", 0],
         ["1:250. Bog'lovchilar vazifasi nima?", "Gap bo'laklari va gaplarni bog'laydi|Ma'noni o'zgartiradi|Hissiyotni|So'roqni", 0],
         ["1:251. Teng bog'lovchilarni ko'rsating.", "Va, hamda, lekin, ammo|Chunki|Go'yo|Ya'ni", 0],
         ["1:252. Yuklamalar qanday vazifani bajaradi?", "So'z yoki gapga ma'no beradi|Bog'laydi|Egalikni|Vaqtni", 0],
@@ -332,7 +331,7 @@
         ["1:263. Hol qanday so'roqlarga javob bo'ladi?", "Qachon? Qayerda? Qanday?|Kim? Nima?|Kimning?|Nima qildi?", 0],
         ["1:264. Gap ma'no va maqsadiga ko'ra necha turga bo'linadi?", "4 turga|3 turga|2 turga|5 turga", 0],
         ["1:265. Gap tuzilishiga ko'ra necha turga bo'linadi?", "Sodda va qo'shma gaplar|Darak va so'roq|Egalik|To'liq", 0],
-        ["1:266. Sodda gap nima?", "Bitta gramatika asosga ega gap|Ikki yoki ortiq qismli|Egasiz gap|Undov gap", 0],
+        ["1:266. Sodda gap nima?", "Bitta gramatika asosга ega gap|Ikki yoki ortiq qismli|Egasiz gap|Undov gap", 0],
         ["1:267. Qo'shma gap nima?", "Ikki yoki ortiq sodda gapning bog'lanishi|Bitta egasi bor|Sifatlardan iborat|So'roq", 0],
         ["1:268. \"Men talabaman.\" gapi maqsada ko'ra qanday gap?", "Darak gap|So'roq gap|Buyruq gap|Istak gap", 0],
         ["1:269. \"Siz kimsiz?\" gapi maqsada ko'ra qanday gap?", "So'roq gap|Darak gap|Buyruq gap|Undov gap", 0],
@@ -354,13 +353,13 @@
         ["1:285. Omonimlarni ko'rsating.", "Ot (hayvon) / Ot (fe'l)|Yuz, chehra|Issiq, sovuq|Shirin", 0],
         ["1:286. Paronimlarni ko'rsating.", "Sodda (sada) / Sado|Yaxshi, yomon|Uydan, uyingiz|Yugurdi", 0],
         ["1:287. Ibora (Frazeologizm) nima?", "Ko'chma ma'nodagi turg'un so'z birikmasi|Sodda gap|Kelishik|Yangi", 0],
-        ["1:288. \"Yuragi bo'g'ziga kemdi\" iborasi ma'nosi nima?", "Qattiq qo'rqdi|Xursand bo'ldi|Xafa bo'ldi|Charchadi", 0],
+        ["1:288. \"Yuragi bo'g'ziga keldi\" iborasi ma'nosi nima?", "Qattiq qo'rqdi|Xursand bo'ldi|Xafa bo'ldi|Charchadi", 0],
         ["1:289. \"Tili uzun\" iborasi ma'nosi nima?", "Aybdorligi yo'q, beayb, g'olib|Ko'p gapiradigan|Kasal odam|Yolg'onchi", 0],
         ["1:290. \"Tepasiga kelmoq\" iborasi ma'nosi nima?", "Yaqinlashmoq, kelib qolmoq|Uxlash|Yordam berish|Urmoq", 0],
         ["1:291. \"Ko'z yummoq\" iborasi ma'nosi nima?", "Vafot etmoq yoki e'tibor bermaslik|Uxlamoq|Yig'lamoq|Ko'rish", 0],
         ["1:292. \"O'pkasi to'lmoq\" iborasi ma'nosi nima?", "Yig'lamoqdan berib qolmoq|Nafas ololmaslik|Kulmoq|Yugurmoq", 0],
         ["1:293. Tasviriy ifoda nima?", "Nomini to'g'ridan-to'g'ri aytmay, tasvirlab aytish|Rasm chizish|Sifatlash|Antonim", 0],
-        ["1:294. \"Oq oltin\" tasviriy ifodasi nimani bildiradi?", "Paxta|Guruch|Tuz|Sut", 0],
+        ["1:294. \"Oк oltin\" tasviriy ifodasi nimani bildiradi?", "Paxta|Guruch|Tuz|Sut", 0],
         ["1:295. \"Qora oltin\" tasviriy ifodasi nimani bildiradi?", "Neft / Ko'mir|Paxta|Temir|Tuproq", 0],
         ["1:296. \"Zangori kema\" tasviriy ifodasi nimani bildiradi?", "Kosmik kema|Samolyot|Traktor|Televizor", 3],
         ["1:297. \"Sahro kemasi\" tasviriy ifodasi qaysi hayvonga nisbatan ishlatiladi?", "Tuya|Ot|Eshak|Arslon", 0],
@@ -380,17 +379,17 @@
         ["1:311. Takroriy so'zlarni ko'rsating.", "Katta-katta, sekin-sekin|Ota-ona|Go'zal qiz|Yugurib", 0],
         ["1:312. Qisqartma so'zlar qaysi bandda berilgan?", "OTM, ToshPTI, BMT, AQSH|Institut|Shifokor|Viloyat", 0],
         ["1:313. Qo'shma otlar qanday yoziladi?", "Qo'shib yoki chiziqcha bilan|Faqat alohida|Bosh harf bilan|Yozilmaydi", 0],
-        ["1:314. \"Oshqozon\" so'zi qanday so'з tarkibiga kiradi?", "Qo'shma so'z (ot)|Sodda so'z|Juft so'z|Takroriy so'z", 0],
+        ["1:314. \"Oshqozon\" so'zi qanday so'z tarkibiga kiradi?", "Qo'shma so'z (ot)|Sodda so'z|Juft so'z|Takroriy so'z", 0],
         ["1:315. \"Yurak-qon tomir\" so'zi qanday yoziladi?", "Chiziqcha (defis) bilan|Qo'shib|Alohida|Bosh harf bilan", 0],
         ["1:316. Matn nima?", "Mazmunan va gramatik bog'langan gaplar guruhi|Iboralar|Alohida so'zlar|Lug'at", 0],
         ["1:317. Matnning asosiy qismlari qaysilar?", "Kirish, asosiy qism, xulosa|Ega va kesim|Sarlavha|Abzas", 0],
-        ["1:318. Nutq uslublari nechaga bo'linadi?", "5 ta asosiy uslub bor|3 ta|4 ta|6 ta", 0],
-        ["1:319. Tibbiy darsliklar va maqolalar qaysi uslubда yoziladi?", "Ilmiy uslubda|Rasmiy uslubda|Badiiy uslubda|Publisistik", 0],
+        ["1:318. Nutq uslublari nechaga bo'linadi?", "5 ta asosий uslub bor|3 ta|4 ta|6 ta", 0],
+        ["1:319. Tibbiy darsliklar и maqolalar qaysi uslubda yoziladi?", "Ilmiy uslubda|Rasmiy uslubda|Badiiy uslubda|Publisistik", 0],
         ["1:320. Kasalxona hujjatlari va buyruqlar qaysi uslubga kiradi?", "Rasmiy-idoraviy uslub|Ilmiy uslub|So'zlashuv|Badiiy", 0],
-        ["1:321. Gazeta va jurnallardagi maqolalar qaysi uslubda bo'ladi?", "Publisistik uslub|Ilmiy uslub|Rasmiy uslub|Badiiy uslub", 0],
+        ["1:321. Gazeta va jurnallardagi maqolalar qaysi uslubда bo'ladi?", "Publisistik uslub|Ilmiy uslub|Rasmiy uslub|Badiiy uslub", 0],
         ["1:322. Roman va hikoyalar qaysi uslubda yoziladi?", "Badiiy uslub|Ilmiy uslub|Rasmiy uslub|So'zlashuv", 0],
         ["1:323. Kundalik hayotda odamlar o'zaro qaysi uslubda gaplashadi?", "So'zlashuv uslubi|Ilmiy uslub|Badiiy uslub|Rasmiy uslub", 0],
-        ["1:324. Ilmiy uslubning основной xususiyati nima?", "Anriqlik, mantiqiylik va atamalar|Hissiyotga boylik|Qisqartmalar|Erkin", 0],
+        ["1:324. Ilmiy uslubning asosiy xususiyati nima?", "Anriqlik, mantiqiylik va atamalar|Hissiyotga boylik|Qisqartmalar|Erkin", 0],
         ["1:325. Rasmiy uslubning xususiyati nima?", "Standart shakllar va qat'iylik|Ko'chma ma'nolar|Sheva so'zlari|Mubolag'a", 0],
         ["1:326. Badiiy uslubda nimalardan keng foydalaniladi?", "Tasviriy vositalar, ko'chma ma'nolar|Atamalardan|Qonunlardan|Raqamlardan", 0],
         ["1:327. Egalik qo'shimchasi mavjud so'zni toping.", "Uyim|Maktabdan|Kitobni|Yozdi", 0],
@@ -401,11 +400,11 @@
         ["1:332. O'tgan zamon fe'li bor gap qaysi?", "U shifokor bo'ldi.|Men o'qiyapman.|Ertaga keladi.|Dars boshlanadi.", 0],
         ["1:333. Hozirgi zamon fe'li bor gap qaysi?", "Hamshira dori beryapti.|U keldi.|O'qiydi.|Dori tayyorlandi.", 0],
         ["1:334. Kelgusi zamon fe'li bor gap qaysi?", "Ertaga imtihon topshiramiz.|Kecha o'qidim.|Hozir yozyapti.|Tugatdim.", 0],
-        ["1:335. Payt ravishi bor gapni toping.", "Bugun ob-havo yaxshi.|U sekin yuradi.|Ko'p gapirma.|Oldinga yur.", 0],
+        ["1:335. Payt ravishi bor gapни toping.", "Bugun ob-havo yaxshi.|U sekin yuradi.|Ko'p gapirma.|Oldinga yur.", 0],
         ["1:336. Holat ravishi bor gapni toping.", "Talaba tez gapirdi.|Ertaga kelamiz.|Uzoqqa ketdi.|Ozgina dam ol.", 0],
         ["1:337. O'rin ravishi bor gapni aniqlang.", "U orqaga qaradi.|Hozir dars.|Yaxshi o'qi.|Ko'p ishladi.", 0],
         ["1:338. Miqdor ravishi bor gap qaysi?", "U bugun juda ko'p o'qidi.|Asta yurdi.|Kecha keldi.|Yaqinda turadi.", 0],
-        ["1:339. Sof ko'makchi qatnashган gap qaysi?", "Siz uchun dori tayyorladim.|Keyin kelaman.|Tashqariga chiqdi.|Uyga qarab", 0],
+        ["1:339. Sof ko'makchi qatnashgan gap qaysi?", "Siz uchun dori tayyorladim.|Keyin kelaman.|Tashqariga chiqdi.|Uyga qarab", 0],
         ["1:340. Bog'lovchi qatnashgan gap qaysi?", "Anvar va Shaxzod talabalar.|Men ham boraman.|Faqat sen qolding.|Keldilarmi?", 0],
         ["1:341. Yuklama qatnashgan gap qaysi?", "Siz ham kelasizmi?|Kitob va daftar.|U institutga ketdi.|Dars tugadi.", 0],
         ["1:342. Gapda ega vazifasidagi so'zni toping: \"Shifokor bemorni davoladi.\"", "Shifokor|Bemorni|Davoladi|Ega yo'q", 0],
@@ -420,8 +419,8 @@
         ["1:351. Frazeologizm (ibora) bor gap qaysi?", "Uning qattiq jahli chiqdi (yuragi bo'g'ziga keldi).|Men kitob o'qidim.|U shifokor bo'lib ishlaydi.|Kasalxona yangi.", 0],
         ["1:352. Tasviriy ifoda bor gapni toping.", "Oq oltin karvonlari yo'lga chiqdi.|Paxta terimi boshlandi.|O'simliklar foydali.|Jigar muhim a'zo.", 0],
         ["1:353. Qo'shma ot bor qatorni ko'rsating.", "Oshqozon, qon-tomir|Yurak, o'pka|Shifokor, hamshira|Dori, ukol", 0],
-        ["1:354. Juft so'з bor qatorni aniqlang.", "Ota-ona, aka-uka|Katta-katta|Toshkent shahri|Oliy ta'lim", 0],
-        ["1:355. Takroriy so'z bor gapni toping.", "Hamshira sekin-sekin yurdi.|U dori ichdi.|Ota-onam keldilar.|Dars boshlandi.", 0],
+        ["1:354. Juft so'z bor qatorni aniqlang.", "Ota-ona, aka-uka|Katta-katta|Toshkent shahri|Oliy ta'lim", 0],
+        ["1:355. Takroriy so'з bor gapni toping.", "Hamshira sekin-sekin yurdi.|U dori ichdi.|Ota-onam keldilar.|Dars boshlandi.", 0],
         ["1:356. Qisqartma so'z qatnashgan gap qaysi?", "U ToshPTI talabasi.|Men institutda o'qiyman.|Shifoxona juda katta.|Vaksina olindi.", 0],
         ["1:357. Tutuq belgili so'zni ko'rsating.", "Mas'uliyat|Maktab|Shifokor|Bemor", 0],
         ["1:358. O'zbek tilida nechta unli harf bor?", "6 ta|10 ta|5 ta|8 ta", 0],
@@ -457,7 +456,6 @@
         ["1:388. Qaysi kelishik bor?", "O'rin-payt kelishigi.|Chiqish kelishigi yo'q.|Kelishiklar 8 ta.|Bosh kelishik qo'shimchali", 0]
     ];
 
-    // Разворачиваем сжатую базу в полноценные объекты вопросов
     const quizQuestions = rawData.map(item => {
         return {
             type: item[1].split('|').length === 2 ? "boolean" : "select",
@@ -497,7 +495,6 @@
         optionsForm.className = 'options-container';
         optionsForm.innerHTML = '';
 
-        // Если на этот вопрос уже отвечали ранее, блокируем его и показываем старую подсветку
         if (userAnswers[currentStep] !== null) {
             optionsForm.classList.add('lock');
             isChecked = true;
@@ -519,7 +516,6 @@
                 input.checked = true;
             }
 
-            // Восстановление подсветки для уже решенного вопроса при листании "Назад"
             if (userAnswers[currentStep] !== null) {
                 if (option === currentQuestion.correctAnswer) {
                     optionItem.classList.add('correct');
