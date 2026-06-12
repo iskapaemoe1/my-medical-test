@@ -3,120 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Медицинский Тест</title>
+    <title>Интерактивное Тестирование</title>
     <style>
         :root {
-            --primary: #2b6cb0;
-            --bg: #f7fafc;
-            --card: #ffffff;
-            --text: #2d3748;
-            --border: #e2e8f0;
-            --error: #e53e3e;
-            --error-bg: #fff5f5;
-            --success: #38a169;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            padding: 40px 20px;
-            line-height: 1.5;
-        }
-        .container { max-width: 700px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { color: var(--primary); margin-bottom: 10px; }
-        .quiz-form { display: flex; flex-direction: column; gap: 20px; }
-        .question-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .question-card.unanswered {
-            border-color: var(--error);
-            background: var(--error-bg);
+
+        .quiz-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Шкала прогресса */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
         .question-number {
-            font-size: 0.8rem;
-            color: var(--primary);
-            font-weight: bold;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-color);
             text-transform: uppercase;
-            margin-bottom: 5px;
+            letter-spacing: 0.5px;
         }
-        .question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; }
-        .options-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        /* Стили вариантов ответа */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .option-item {
+            position: relative;
+        }
+
+        .option-item input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
         .option-label {
             display: flex;
             align-items: center;
-            padding: 10px 15px;
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            padding: 14px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background-color: #fafafa;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
             cursor: pointer;
         }
-        .option-label:hover { background: #edf2f7; }
-        .option-label input { margin-right: 12px; width: 18px; height: 18px; }
-        .submit-btn {
-            background: var(--primary);
-            color: white;
+
+        /* Эффекты при наведении и выборе */
+        .option-item:hover .option-label {
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .option-item input[type="radio"]:checked + .option-label {
+            border-color: var(--primary-color);
+            background-color: #eef2ff;
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        /* Навигационные кнопки */
+        .navigation-box {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 12px 24px;
             border: none;
-            border-radius: 6px;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            align-self: center;
-            margin-top: 20px;
-        }
-        .submit-btn:hover { background: #1a528d; }
-        .result-box {
-            display: none;
-            background: white;
-            border: 2px solid var(--success);
             border-radius: 8px;
-            padding: 25px;
-            margin-top: 30px;
-            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
         }
-        .result-percentage { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-top: 10px; }
-        .alert-banner {
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto; /* Прижимает к правому краю, если кнопка одна */
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Экран результатов */
+        .result-screen {
             display: none;
-            color: var(--error);
-            background: var(--error-bg);
-            border: 1px solid var(--error);
-            padding: 12px;
-            border-radius: 6px;
             text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
+            padding: 16px 0;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .result-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .result-score {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .result-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #f0fdf4;
+            border: 4px solid var(--success-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--success-color);
+            margin: 0 auto 32px auto;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.1);
+        }
+
+        .restart-btn {
+            background-color: var(--text-main);
+            color: white;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .restart-btn:hover {
+            background-color: #000000;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Итоговое тестирование</h1>
-        <p>Ответьте на вопросы ниже</p>
-    </header>
+<div class="quiz-container">
+    <div id="quizWindow">
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        
+        <div class="quiz-header">
+            <div id="questionNumber" class="question-number">Вопрос 1 из 7</div>
+        </div>
 
-    <div id="alertBanner" class="alert-banner">Пожалуйста, ответьте на все вопросы!</div>
+        <div id="questionText" class="question-text">Загрузка вопроса...</div>
 
-    <form id="quizForm" class="quiz-form" onsubmit="event.preventDefault();">
-        <div id="quizContainer"></div>
-        <button type="button" class="submit-btn" onclick="checkQuiz()">Проверить результат</button>
-    </form>
+        <form id="optionsForm" class="options-container" onsubmit="event.preventDefault();">
+            </form>
 
-    <div id="resultBox" class="result-box">
-        <h2>Тест завершен!</h2>
-        <p>Правильных ответов: <strong id="correctCount">0</strong> из <span id="totalCount">0</span></p>
-        <div class="result-percentage" id="percentageValue">0%</div>
+        <div class="navigation-box">
+            <button id="prevBtn" class="btn btn-secondary" onclick="goBack()" disabled>Назад</button>
+            <button id="nextBtn" class="btn btn-primary" onclick="goNext()">Дальше</button>
+        </div>
+    </div>
+
+    <div id="resultScreen" class="result-screen">
+        <div class="result-icon">🎉</div>
+        <div class="result-title">Тест успешно завершен!</div>
+        <div id="resultScore" class="result-score">Вы ответили правильно на 0 из 0 вопросов</div>
+        <div id="resultCircle" class="result-circle">0%</div>
+        <button class="restart-btn" onclick="restartQuiz()">Пройти заново</button>
     </div>
 </div>
 
 <script>
+    // Массив вопросов
     const quizQuestions = [
         {
             type: "boolean",
@@ -153,103 +304,140 @@
             question: "Какой врач специализируется на лечении заболеваний центральной и периферической нервной системы?",
             options: ["Гепатолог", "Nevrolog", "Иммунолог", "Пульмонолог"],
             correctAnswer: "Nevrolog"
+        },
+        {
+            type: "boolean",
+            question: "Закон о придании узбекскому языку статуса государственного был принят 21 октября 1989 года.",
+            options: ["Верно", "Неверно"],
+            correctAnswer: "Верно"
         }
     ];
 
-    function initQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (!container) return;
-        container.innerHTML = ''; 
+    let currentStep = 0;
+    // Массив, где будут храниться ответы пользователя (null по умолчанию)
+    let userAnswers = new Array(quizQuestions.length).fill(null);
 
-        quizQuestions.forEach((q, qIndex) => {
-            const card = document.createElement('div');
-            card.className = 'question-card';
-            card.id = 'question_' + qIndex;
+    // Функция отображения текущего вопроса
+    function renderQuestion() {
+        const currentQuestion = quizQuestions[currentStep];
+        
+        // Обновляем номер вопроса и текст
+        document.getElementById('questionNumber').textContent = `Вопрос ${currentStep + 1} из ${quizQuestions.length}`;
+        document.getElementById('questionText').textContent = currentQuestion.question;
 
-            const numDiv = document.createElement('div');
-            numDiv.className = 'question-number';
-            numDiv.textContent = 'Вопрос ' + (qIndex + 1);
-            card.appendChild(numDiv);
+        // Обновляем прогресс-бар
+        const progressPercent = ((currentStep) / quizQuestions.length) * 100;
+        document.getElementById('progressBar').style.width = progressPercent + '%';
 
-            const textDiv = document.createElement('div');
-            textDiv.className = 'question-text';
-            textDiv.textContent = q.question;
-            card.appendChild(textDiv);
+        // Кнопка Назад
+        const prevBtn = document.getElementById('prevBtn');
+        if (currentStep === 0) {
+            prevBtn.disabled = true;
+            prevBtn.style.opacity = '0'; // скрываем плавно, если первый вопрос
+        } else {
+            prevBtn.disabled = false;
+            prevBtn.style.opacity = '1';
+        }
 
-            const optionsList = document.createElement('ul');
-            optionsList.className = 'options-list';
+        // Кнопка Дальше / Проверить результат
+        const nextBtn = document.getElementById('nextBtn');
+        if (currentStep === quizQuestions.length - 1) {
+            nextBtn.textContent = 'Проверить результат';
+        } else {
+            nextBtn.textContent = 'Дальше';
+        }
 
-            q.options.forEach((option) => {
-                const li = document.createElement('li');
-                const label = document.createElement('label');
-                label.className = 'option-label';
+        // Генерируем варианты ответов
+        const optionsForm = document.getElementById('optionsForm');
+        optionsForm.innerHTML = '';
 
-                const input = document.createElement('input');
-                input.type = 'radio';
-                input.name = 'question_input_' + qIndex;
-                input.value = option;
-                
-                input.onchange = function() {
-                    card.classList.remove('unanswered');
-                };
+        currentQuestion.options.forEach((option, index) => {
+            const optionItem = document.createElement('div');
+            optionItem.className = 'option-item';
 
-                const span = document.createElement('span');
-                span.textContent = option;
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'quiz_option';
+            input.id = 'opt_' + index;
+            input.value = option;
 
-                label.appendChild(input);
-                label.appendChild(span);
-                li.appendChild(label);
-                optionsList.appendChild(li);
+            // Если пользователь уже выбирал этот ответ ранее, восстанавливаем его
+            if (userAnswers[currentStep] === option) {
+                input.checked = true;
+            }
+
+            // Сохраняем выбор при клике
+            input.addEventListener('change', function() {
+                userAnswers[currentStep] = this.value;
             });
 
-            card.appendChild(optionsList);
-            container.appendChild(card);
+            const label = document.createElement('label');
+            label.className = 'option-label';
+            label.htmlFor = 'opt_' + index;
+            label.textContent = option;
+
+            optionItem.appendChild(input);
+            optionItem.appendChild(label);
+            optionsForm.appendChild(optionItem);
         });
     }
 
-    function checkQuiz() {
-        const alertBanner = document.getElementById('alertBanner');
-        const resultBox = document.getElementById('resultBox');
-        if (alertBanner) alertBanner.style.display = 'none';
-        
-        let correctCount = 0;
-        let hasUnanswered = false;
-
-        quizQuestions.forEach((q, qIndex) => {
-            const selectedInput = document.querySelector('input[name="question_input_' + qIndex + '"]:checked');
-            const cardElement = document.getElementById('question_' + qIndex);
-
-            if (!selectedInput) {
-                if (cardElement) cardElement.classList.add('unanswered');
-                hasUnanswered = true;
-            } else {
-                if (cardElement) cardElement.classList.remove('unanswered');
-                if (selectedInput.value === q.correctAnswer) {
-                    correctCount++;
-                }
-            }
-        });
-
-        if (hasUnanswered) {
-            if (alertBanner) alertBanner.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Кнопка "Дальше"
+    function goNext() {
+        // Проверяем, выбрал ли пользователь ответ перед тем, как идти дальше
+        if (userAnswers[currentStep] === null) {
+            alert('Пожалуйста, выберите один из вариантов ответа!');
             return;
         }
 
-        const totalCount = quizQuestions.length;
-        const percentage = Math.round((correctCount / totalCount) * 100);
-
-        document.getElementById('correctCount').textContent = correctCount;
-        document.getElementById('totalCount').textContent = totalCount;
-        document.getElementById('percentageValue').textContent = percentage + '%';
-
-        if (resultBox) {
-            resultBox.style.display = 'block';
-            resultBox.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        if (currentStep < quizQuestions.length - 1) {
+            currentStep++;
+            renderQuestion();
+        } else {
+            showResults();
         }
     }
 
-    document.addEventListener('DOMContentLoaded', initQuiz);
+    // Кнопка "Назад"
+    function goBack() {
+        if (currentStep > 0) {
+            currentStep--;
+            renderQuestion();
+        }
+    }
+
+    // Расчет результатов и показ финального экрана
+    function showResults() {
+        let correctCount = 0;
+
+        quizQuestions.forEach((q, index) => {
+            if (userAnswers[index] === q.correctAnswer) {
+                correctCount++;
+            }
+        });
+
+        const totalCount = quizQuestions.length;
+        const scorePercent = Math.round((correctCount / totalCount) * 100);
+
+        // Прячем окно с вопросами, показываем финальное окно
+        document.getElementById('quizWindow').style.display = 'none';
+        
+        document.getElementById('resultScore').textContent = `Вы ответили правильно на ${correctCount} из ${totalCount} вопросов`;
+        document.getElementById('resultCircle').textContent = scorePercent + '%';
+        document.getElementById('resultScreen').style.display = 'block';
+    }
+
+    // Перезапуск теста
+    function restartQuiz() {
+        currentStep = 0;
+        userAnswers = new Array(quizQuestions.length).fill(null);
+        document.getElementById('resultScreen').style.display = 'none';
+        document.getElementById('quizWindow').style.display = 'block';
+        renderQuestion();
+    }
+
+    // Старт при загрузке страницы
+    document.addEventListener('DOMContentLoaded', renderQuestion);
 </script>
 
 </body>
