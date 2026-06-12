@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестирование: Медицинский Узбекский / Русский</title>
+    <style>
+        :root {
+            --primary-color: #2b6cb0;
+            --primary-hover: #1a528d;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --error-color: #e53e3e;
+            --error-bg: #fff5f5;
+            --success-color: #38a169;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #718096;
+        }
+
+        .quiz-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .question-card.unanswered {
+            border-color: var(--error-color);
+            background-color: var(--error-bg);
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .option-label:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* Кнопка отправки */
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            align-self: center;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(43, 108, 176, 0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Блок результатов */
+        .result-box {
+            display: none;
+            background: white;
+            border: 2px solid var(--success-color);
+            border-radius: 8px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-box h2 {
+            color: var(--success-color);
+            margin-bottom: 15px;
+            font-size: 1.75rem;
+        }
+
+        .result-score {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .result-percentage {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .alert-banner {
+            display: none;
+            color: var(--error-color);
+            background: var(--error-bg);
+            border: 1px solid var(--error-color);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Итоговое тестирование</h1>
+        <p>Ответьте на предложенные вопросы из базы учебной сессии</p>
+    </header>
+
+    <div id="alertBanner" class="alert-banner">Пожалуйста, ответьте на все вопросы перед проверкой!</div>
+
+    <form id="quizForm" class="quiz-form" onsubmit="event.preventDefault();">
+        <div id="quizContainer"></div>
+        <button type="button" class="submit-btn" onclick="checkQuiz()">Проверить результат</button>
+    </form>
+
+    <div id="resultBox" class="result-box">
+        <h2>Тестирование завершено!</h2>
+        <p class="result-score">Правильных ответов: <strong id="correctCount">0</strong> из <span id="totalCount">0</span></p>
+        <p class="result-percentage" id="percentageValue">0%</p>
+    </div>
+</div>
+
+<script>
+    /**
+     * База данных вопросов теста.
+     * Чтобы добавить новый вопрос, просто скопируйте объект структуры и вставьте в конец массива.
+     * * Доступные типы (type):
+     * - 'boolean': Вопрос ДА/НЕТ (генерируются 2 кнопки).
+     * - 'select': Вопрос с 4 вариантами ответов[cite: 527].
+     */
+    const quizQuestions = [
+        {
+            type: "boolean",
+            question: "Слово «Мышечная ткань» переводится на узбекский язык как «Mushak to'qimasi».",
+            options: ["Верно", "Неверно"],
+            correctAnswer: "Верно" // Строковое совпадение с текстом правильного ответа [cite: 606, 607]
+        },
+        {
+            type: "boolean",
+            question: "Слово «Нервная система» переводится на узбекский язык как «Asab hujayrasi».",
+            options: ["Верно", "Неверно"],
+            correctAnswer: "Неверно" // Так как «Asab hujayrasi» — это нервная клетка [cite: 606, 608]
+        },
+        {
+            type: "boolean",
+            question: "Выражение «Побочные действие» переводится как «Muolaja ta'siri».",
+            options: ["Верно", "Неверно"],
+            correctAnswer: "Неверно" [cite: 606]
+        },
+        {
+            type: "select",
+            question: "Какая медицинская специализация занимается изучением и лечением заболеваний почек?",
+            options: ["Вертебrolog", "Nefrolog", "Trixolog", "Gematolog"],
+            correctAnswer: "Nefrolog" [cite: 527, 528, 530]
+        },
+        {
+            type: "select",
+            question: "Кто является первооткрывателем пенициллина?",
+            options: ["Эдвард Дженнер", "Луи Пастер", "Александр Флеминг", "Роберт Кох"],
+            correctAnswer: "Александр Флеминг" [cite: 510, 512]
+        },
+        {
+            type: "select",
+            question: "Какой врач специализируется на лечении заболеваний центральной и периферической нервной системы?",
+            options: ["Gepatolog", "Nevrolog", "Immunolog", "Pulmonolog"],
+            correctAnswer: "Nevrolog" [cite: 531, 532]
+        },
+        {
+            type: "boolean",
+            question: "Закон о придании узбекскому языку статуса государственного был принят 21 октября 1989 года.",
+            options: ["Верно", "Неверно"],
+            correctAnswer: "Верно" [cite: 515, 516]
+        },
+        {
+            type: "select",
+            question: "Переведите термин «Обязанность / Ответственность» на узбекский язык:",
+            options: ["Imkoniyat", "Loyiha", "Mas'uliyat", "Tarkib"],
+            correctAnswer: "Mas'uliyat" [cite: 499, 500, 501, 504]
+        }
+    ];
+
+    // Функция инициализации и рендеринга теста на странице
+    function initQuiz() {
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = ''; // Очистка на всякий случай
+
+        quizQuestions.forEach((q, qIndex) => {
+            // Создаем карточку вопроса
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `question_${qIndex}`;
+
+            // Порядковый номер вопроса
+            const numDiv = document.createElement('div');
+            numDiv.className = 'question-number';
+            numDiv.textContent = `Вопрос ${qIndex + 1}`;
+            card.appendChild(numDiv);
+
+            // Текст вопроса
+            const textDiv = document.createElement('div');
+            textDiv.className = 'question-text';
+            textDiv.textContent = q.question;
+            card.appendChild(textDiv);
+
+            // Список вариантов
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options-list';
+
+            q.options.forEach((option, oIndex) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `question_input_${qIndex}`;
+                input.value = option;
+                
+                // Сбрасываем выделение ошибок при клике на вариант
+                input.onchange = function() {
+                    document.getElementById(`question_${qIndex}`).classList.remove('unanswered');
+                };
+
+                const span = document.createElement('span');
+                span.textContent = option;
+
+                label.appendChild(input);
+                label.appendChild(span);
+                li.appendChild(label);
+                optionsList.appendChild(li);
+            });
+
+            card.appendChild(optionsList);
+            container.appendChild(card);
+        });
+    }
+
+    // Функция проверки результатов
+    function checkQuiz() {
+        const alertBanner = document.getElementById('alertBanner');
+        const resultBox = document.getElementById('resultBox');
+        
+        alertBanner.style.display = 'none';
+        
+        let correctCount = 0;
+        let hasUnanswered = false;
+
+        quizQuestions.forEach((q, qIndex) => {
+            const selectedInput = document.querySelector(`input[name="question_input_${qIndex}"]:checked`);
+            const cardElement = document.getElementById(`question_${qIndex}`);
+
+            if (!selectedInput) {
+                // Если ответ не выбран, помечаем карточку классами ошибок
+                cardElement.classList.add('unanswered');
+                hasUnanswered = true;
+            } else {
+                cardElement.classList.remove('unanswered');
+                // Если ответ совпадает с правильным
+                if (selectedInput.value === q.correctAnswer) {
+                    correctCount++;
+                }
+            }
+        });
+
+        // Если есть неотвеченные вопросы, прерываем выполнение и скроллим наверх
+        if (hasUnanswered) {
+            alertBanner.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            resultBox.style.display = 'none';
+            return;
+        }
+
+        // Вычисляем процент успеха
+        const totalCount = quizQuestions.length;
+        const percentage = Math.round((correctCount / totalCount) * 100);
+
+        // Заполняем результирующий блок данными
+        document.getElementById('correctCount').textContent = correctCount;
+        document.getElementById('totalCount').textContent = totalCount;
+        document.getElementById('percentageValue').textContent = `${percentage}%`;
+
+        // Показываем блок результатов и прокручиваем к нему
+        resultBox.style.display = 'block';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    // Запускаем генерацию теста при загрузке документа
+    document.addEventListener('DOMContentLoaded', initQuiz);
+</script>
+
+</body>
+</html>
