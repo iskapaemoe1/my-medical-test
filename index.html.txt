@@ -3,188 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тестирование: Медицинский Узбекский / Русский</title>
+    <title>Медицинский Тест</title>
     <style>
         :root {
-            --primary-color: #2b6cb0;
-            --primary-hover: #1a528d;
-            --bg-color: #f7fafc;
-            --card-bg: #ffffff;
-            --text-color: #2d3748;
-            --border-color: #e2e8f0;
-            --error-color: #e53e3e;
+            --primary: #2b6cb0;
+            --bg: #f7fafc;
+            --card: #ffffff;
+            --text: #2d3748;
+            --border: #e2e8f0;
+            --error: #e53e3e;
             --error-bg: #fff5f5;
-            --success-color: #38a169;
+            --success: #38a169;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             padding: 40px 20px;
+            line-height: 1.5;
         }
-
-        .container {
-            max-width: 750px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        header h1 {
-            color: var(--primary-color);
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            color: #718096;
-        }
-
-        .quiz-form {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
+        .container { max-width: 700px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: var(--primary); margin-bottom: 10px; }
+        .quiz-form { display: flex; flex-direction: column; gap: 20px; }
         .question-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.2s, background-color 0.2s;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-
         .question-card.unanswered {
-            border-color: var(--error-color);
-            background-color: var(--error-bg);
+            border-color: var(--error);
+            background: var(--error-bg);
         }
-
         .question-number {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
-
-        .question-text {
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .options-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .option-item {
-            display: flex;
-            align-items: center;
-        }
-
+        .question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; }
+        .options-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .option-label {
             display: flex;
             align-items: center;
-            width: 100%;
-            padding: 12px 16px;
+            padding: 10px 15px;
             background: #f8fafc;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s, border-color 0.2s;
         }
-
-        .option-label:hover {
-            background: #edf2f7;
-            border-color: #cbd5e0;
-        }
-
-        .option-label input[type="radio"] {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary-color);
-            cursor: pointer;
-        }
-
+        .option-label:hover { background: #edf2f7; }
+        .option-label input { margin-right: 12px; width: 18px; height: 18px; }
         .submit-btn {
-            background-color: var(--primary-color);
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 6px;
-            padding: 16px 32px;
+            padding: 15px 30px;
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
             align-self: center;
             margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(43, 108, 176, 0.2);
-            transition: background-color 0.2s, transform 0.1s;
         }
-
-        .submit-btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .submit-btn:active {
-            transform: scale(0.98);
-        }
-
+        .submit-btn:hover { background: #1a528d; }
         .result-box {
             display: none;
             background: white;
-            border: 2px solid var(--success-color);
+            border: 2px solid var(--success);
             border-radius: 8px;
-            padding: 30px;
+            padding: 25px;
             margin-top: 30px;
             text-align: center;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-
-        .result-box h2 {
-            color: var(--success-color);
-            margin-bottom: 15px;
-            font-size: 1.75rem;
-        }
-
-        .result-score {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-
-        .result-percentage {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-color);
-        }
-
+        .result-percentage { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-top: 10px; }
         .alert-banner {
             display: none;
-            color: var(--error-color);
+            color: var(--error);
             background: var(--error-bg);
-            border: 1px solid var(--error-color);
+            border: 1px solid var(--error);
             padding: 12px;
             border-radius: 6px;
             text-align: center;
             margin-bottom: 20px;
-            font-weight: 600;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -193,10 +99,10 @@
 <div class="container">
     <header>
         <h1>Итоговое тестирование</h1>
-        <p>Ответьте на предложенные вопросы из базы учебной сессии</p>
+        <p>Ответьте на вопросы ниже</p>
     </header>
 
-    <div id="alertBanner" class="alert-banner">Пожалуйста, ответьте на все вопросы перед проверкой!</div>
+    <div id="alertBanner" class="alert-banner">Пожалуйста, ответьте на все вопросы!</div>
 
     <form id="quizForm" class="quiz-form" onsubmit="event.preventDefault();">
         <div id="quizContainer"></div>
@@ -204,14 +110,13 @@
     </form>
 
     <div id="resultBox" class="result-box">
-        <h2>Тестирование завершено!</h2>
-        <p class="result-score">Правильных ответов: <strong id="correctCount">0</strong> из <span id="totalCount">0</span></p>
-        <p class="result-percentage" id="percentageValue">0%</p>
+        <h2>Тест завершен!</h2>
+        <p>Правильных ответов: <strong id="correctCount">0</strong> из <span id="totalCount">0</span></p>
+        <div class="result-percentage" id="percentageValue">0%</div>
     </div>
 </div>
 
 <script>
-    // Массив вопросов
     const quizQuestions = [
         {
             type: "boolean",
@@ -248,25 +153,12 @@
             question: "Какой врач специализируется на лечении заболеваний центральной и периферической нервной системы?",
             options: ["Гепатолог", "Nevrolog", "Иммунолог", "Пульмонолог"],
             correctAnswer: "Nevrolog"
-        },
-        {
-            type: "boolean",
-            question: "Закон о придании узбекскому языку статуса государственного был принят 21 октября 1989 года.",
-            options: ["Верно", "Неверно"],
-            correctAnswer: "Верно"
-        },
-        {
-            type: "select",
-            question: "Переведите термин «Обязанность / Ответственность» на узбекский язык:",
-            options: ["Imkoniyat", "Loyiha", "Mas'uliyat", "Tarkib"],
-            correctAnswer: "Mas'uliyat"
         }
     ];
 
     function initQuiz() {
         const container = document.getElementById('quizContainer');
         if (!container) return;
-        
         container.innerHTML = ''; 
 
         quizQuestions.forEach((q, qIndex) => {
@@ -289,8 +181,6 @@
 
             q.options.forEach((option) => {
                 const li = document.createElement('li');
-                li.className = 'option-item';
-
                 const label = document.createElement('label');
                 label.className = 'option-label';
 
@@ -300,7 +190,7 @@
                 input.value = option;
                 
                 input.onchange = function() {
-                    document.getElementById('question_' + qIndex).classList.remove('unanswered');
+                    card.classList.remove('unanswered');
                 };
 
                 const span = document.createElement('span');
@@ -320,7 +210,6 @@
     function checkQuiz() {
         const alertBanner = document.getElementById('alertBanner');
         const resultBox = document.getElementById('resultBox');
-        
         if (alertBanner) alertBanner.style.display = 'none';
         
         let correctCount = 0;
@@ -344,7 +233,6 @@
         if (hasUnanswered) {
             if (alertBanner) alertBanner.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            if (resultBox) resultBox.style.display = 'none';
             return;
         }
 
