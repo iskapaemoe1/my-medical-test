@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Медицинская Система Тестирования</title>
+    <title>Tibbiy va Lingvistik Test Tizimi</title>
     <style>
-        /* Полностью черная/темная тема */
+        /* To'liq qora/to'q rejim (Dark Mode) */
         body {
             background-color: #0c0c0e;
             color: #e2e8f0;
@@ -32,7 +32,7 @@
             font-size: 15px;
         }
 
-        /* Кнопки переключения тем */
+        /* Mavzularni almashtirish tugmalari */
         .theme-tabs {
             display: flex;
             gap: 12px;
@@ -66,7 +66,7 @@
             box-shadow: 0 0 20px rgba(0, 173, 181, 0.35);
         }
 
-        /* Контейнер карточки квиза */
+        /* Test kartasi konteyneri */
         .quiz-container {
             background-color: #12121a;
             border: 1px solid #232330;
@@ -96,7 +96,7 @@
             font-weight: 500;
         }
 
-        /* Список опций */
+        /* Variantlar ro'yxati */
         .options-list {
             display: flex;
             flex-direction: column;
@@ -121,7 +121,7 @@
             border-color: #4a5568;
         }
 
-        /* Подсветка ответов */
+        /* Javoblarni rangli qilish */
         .option-btn.correct {
             background-color: #0f5132 !important;
             border-color: #0f5132 !important;
@@ -135,7 +135,7 @@
             color: #ffffff;
         }
 
-        /* Элементы управления */
+        /* Boshqaruv paneli */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -168,7 +168,7 @@
             background-color: #008c95;
         }
 
-        /* Экран результатов */
+        /* Natijalar ekrani */
         .result-screen {
             text-align: center;
             padding: 20px 0;
@@ -200,26 +200,26 @@
 </head>
 <body>
 
-    <h1>Медицинский Практикум</h1>
-    <div class="description">Интерактивный тренажер: 3 темы по 100 вопросов</div>
+    <h1>Tibbiy amaliyot testi</h1>
+    <div class="description">Interaktiv trenajer: 3 ta mavzu, har birida 100 tadan savol</div>
 
     <div class="theme-tabs">
-        <button class="tab-btn active" onclick="switchTheme(1)">Тема 1 (1-100)</button>
-        <button class="tab-btn" onclick="switchTheme(2)">Тема 2 (101-200)</button>
-        <button class="tab-btn" onclick="switchTheme(3)">Тема 3 (201-300)</button>
+        <button class="tab-btn active" onclick="switchTheme(1)">1-Mavzu (Savollar 1-100)</button>
+        <button class="tab-btn" onclick="switchTheme(2)">2-Mavzu (Savollar 101-200)</button>
+        <button class="tab-btn" onclick="switchTheme(3)">3-Mavzu (Savollar 201-300)</button>
     </div>
 
     <div class="quiz-container" id="quiz-card"></div>
 
     <script>
-        // Генерация полной базы данных на 300 вопросов на основе присланного PDF
+        // PDF hujjatidagi ma'lumotlar asosida 300 ta to'liq savollar bazasi
         const questionsData = {
             1: [],
             2: [],
             3: []
         };
 
-        // Сырые структурированные данные из документа для генерации 300 позиций
+        // Hujjatdan olingan tibbiy atamalarning asl tarjimalari
         const rawMedicalTerms = [
             { ru: 'Горький', uz: 'Achchiq' }, { ru: 'Известный', uz: 'Mashhur' }, { ru: 'Проверить', uz: 'Tekshirmoq' },
             { ru: 'Посвятить', uz: 'Bag\'ishlamoq' }, { ru: 'Стремиться', uz: 'Intilmoq' }, { ru: 'Чистить', uz: 'Tozalamoq' },
@@ -244,70 +244,68 @@
             { ru: 'Потовые железы', uz: 'Ter bezlari' }, { ru: 'Слюна', uz: 'So\'lak' }, { ru: 'Мокрота', uz: 'Balg\'am' },
             { ru: 'Грибок', uz: 'Zamburug\'' }, { ru: 'Сыворотка', uz: 'Zardob' }, { ru: 'Глотка', uz: 'Halqum' },
             { ru: 'Пищевод', uz: 'Qizilo\'ngach' }, { ru: 'Почка', uz: 'Buyrak' }, { ru: 'Бинт', uz: 'Bog\'lov (bint)' },
-            { ru: 'Ватa', uz: 'Paxta' }, { ru: 'Капли', uz: 'Tomchilar' }, { ru: 'Мазь', uz: 'Maz' },
+            { ru: 'Вата', uz: 'Paxta' }, { ru: 'Капли', uz: 'Tomchilar' }, { ru: 'Мазь', uz: 'Maz' },
             { ru: 'Мыло', uz: 'Sovun' }, { ru: 'Настойка', uz: 'Damlama' }
         ];
 
-        const rawGrammarItems = [
-            { q: 'Укажите предложение с обращением (Undalma).', a: '"Do\'stlar, vaqt qadriga yetaylik"', fake: ['Vaqt bor gapi', 'Keldi ketdi gapi', 'Yaxshi bola gapi'] },
-            { q: 'Какая часть речи "sari"?', a: 'Ko\'makchi (Послелог)', fake: ['Bog\'lovchi', 'Yuklama', 'Ravish'] },
-            { q: 'Какая часть речи "sayin"?', a: 'Ko\'makchi (Послелог)', fake: ['Son', 'Olmosh', 'Fe\'l'] },
-            { q: 'Какая часть речи "sababli"?', a: 'Ko\'makchi (Послелог)', fake: ['Undov', 'Bog\'lovchi', 'Ot'] },
-            { q: 'Какая часть речи "orqali"?', a: 'Ko\'makchi (Послелог)', fake: ['Ravish', 'Yuklama', 'Sifat'] },
-            { q: 'Какая часть речи "avval"?', a: 'Ravish (Наречие)', fake: ['Ko\'makchi', 'Bog\'lovchi', 'Son'] },
-            { q: 'Какая часть речи "kabi"?', a: 'Ko\'makchi (Послелог)', fake: ['Yuklama', 'Sifat', 'Fe\'l'] },
-            { q: 'Какая часть речи "qaraganda"?', a: 'Ko\'makchi (Послелог)', fake: ['Ravish', 'Bog\'lovchi', 'Undov'] },
-            { q: 'Какая часть речи "ko\'ra"?', a: 'Ko\'makchi (Послелог)', fake: ['Fe\'l', 'Yuklama', 'Ot'] },
-            { q: 'Какая часть речи "uchun"?', a: 'Ko\'makchi (Послелог)', fake: ['Bog\'lovchi', 'Ravish', 'Olmosh'] },
-            { q: 'Какой союз "va"?', a: 'Biriktiruv bog\'lovchi', fake: ['Zidlov bog\'lovchi', 'Ayiruv bog\'lovchi', 'Inkor bog\'lovchi'] },
-            { q: 'Какой союз "goh... goh"?', a: 'Ayiruv bog\'lovchi', fake: ['Biriktiruv bog\'lovchi', 'Zidlov bog\'lovchi', 'Ergashtiruvchi'] },
-            { q: 'Какой союз "yoki"?', a: 'Ayiruv bog\'lovchi', fake: ['Biriktiruv', 'Inkor', 'Zidlov'] }
+        const rawUzGrammarItems = [
+            { q: 'Undalma mavjud gapni belgilang.', a: '"Do\'stlar, vaqt qadriga yetaylik" gapi', fake: ['Vaqt tez oqar ekan gapi', 'Bugun havo juda yaxshi gapi', 'Kitob bilim manbai gapi'] },
+            { q: '"sari" qaysi yordamchi so\'z turkumi?', a: 'Ko\'makchi', fake: ['Bog\'lovchi', 'Yuklama', 'Ravish'] },
+            { q: '"sayin" qaysi yordamchi so\'z turkumi?', a: 'Ko\'makchi birikma', fake: ['Son', 'Olmosh', 'Fe\'l'] },
+            { q: '"sababli" qaysi yordamchi so\'z turkumi?', a: 'Ko\'makchi', fake: ['Undov', 'Bog\'lovchi', 'Ot'] },
+            { q: '"orqali" qaysi yordamchi so\'z turkumi?', a: 'Ko\'makchi', fake: ['Ravish', 'Yuklama', 'Sifat'] },
+            { q: '"avval" qaysi yordamchi so\'z turkumi?', a: 'Ravish (payt bildiradi)', fake: ['Ko\'makchi', 'Bog\'lovchi', 'Son'] },
+            { q: '"kabi" gapida qaysi yordamchi so\'z?', a: 'Ko\'makchi', fake: ['Yuklama', 'Sifat', 'Fe\'l'] },
+            { q: '"qaraganda" qaysi yordamchi so\'z turkumi?', a: 'Ko\'makchi', fake: ['Ravish', 'Bog\'lovchi', 'Undov'] },
+            { q: '"ko\'ra" qaysi yordamchi so\'z turkumi?', a: 'Ko\'makchi', fake: ['Fe\'l', 'Yuklama', 'Ot'] },
+            { q: '"uchun" qaysi yordamchi so\'z turkumi?', a: 'Ko\'makchi', fake: ['Bog\'lovchi', 'Ravish', 'Olmosh'] },
+            { q: '"va" qaysi bog\'lovchi?', a: 'Biriktiruv bog\'lovchi', fake: ['Zidlov bog\'lovchi', 'Ayiruv bog\'lovchi', 'Inkor bog\'lovchi'] },
+            { q: '"goh... goh" qaysi bog\'lovchi?', a: 'Ayiruv bog\'lovchi', fake: ['Biriktiruv bog\'lovchi', 'Zidlov bog\'lovchi', 'Ergashtiruvchi'] },
+            { q: '"yoki" qaysi bog\'lovchi?', a: 'Ayiruv bog\'lovchi', fake: ['Biriktiruv', 'Inkor', 'Zidlov'] }
         ];
 
-        // Автоматическая генерация 300 кастомных вопросов (по 100 на тему)
+        // 300 ta o'zbekcha savollarni avtomatik shakllantirish (har bir mavzuda to'liq 100 tadan)
         function generate300Questions() {
             let totalCounter = 1;
             
             for (let theme = 1; theme <= 3; theme++) {
                 for (let i = 1; i <= 100; i++) {
-                    // Чередуем типы вопросов для разнообразия
                     if (totalCounter % 3 === 0) {
-                        // Тип 1: ДА/НЕТ вопрос (2 варианта)
+                        // 1-Tur: HA/YO'Q formatidagi savol (2 ta variant)
                         let term = rawMedicalTerms[(totalCounter) % rawMedicalTerms.length];
                         let isTrue = Math.random() > 0.4;
-                        let fakeUz = rawMedicalTerms[(totalCounter + 3) % rawMedicalTerms.length].uz;
+                        let fakeUz = rawMedicalTerms[(totalCounter + 2) % rawMedicalTerms.length].uz;
                         
                         questionsData[theme].push({
-                            q: `Верно ли перевод термина: "${term.ru}" на узбекский язык — это "${isTrue ? term.uz : fakeUz}"?`,
-                            options: ['ДА, это верно', 'НЕТ, неверно'],
+                            q: `"${term.ru}" so'zi o'zbekchaga "${isTrue ? term.uz : fakeUz}" deb tarjima qilinishi to'g'rimi?`,
+                            options: ['HA, to\'g\'ri', 'YO\'Q, noto\'g\'ri'],
                             correct: isTrue ? 0 : 1
                         });
                     } else if (totalCounter % 3 === 1) {
-                        // Тип 2: Обычный вопрос на перевод (4 варианта)
+                        // 2-Tur: To'rt variantli klassik tarjima savoli (4 ta variant)
                         let term = rawMedicalTerms[(totalCounter) % rawMedicalTerms.length];
                         let opts = [term.uz];
                         while(opts.length < 4) {
                             let randUz = rawMedicalTerms[Math.floor(Math.random() * rawMedicalTerms.length)].uz;
                             if(!opts.includes(randUz)) opts.push(randUz);
                         }
-                        // Перемешиваем варианты, запоминая правильный индекс
                         let correctAns = term.uz;
                         opts.sort(() => Math.random() - 0.5);
                         
                         questionsData[theme].push({
-                            q: `Как правильно переводится медицинский термин "${term.ru}" на узбекский язык?`,
+                            q: `"${term.ru}" so'zi o'zbekchaga qanday tarjima qilinadi?`,
                             options: opts,
                             correct: opts.indexOf(correctAns)
                         });
                     } else {
-                        // Тип 3: Грамматический/анатомический контекст (4 варианта)
-                        let grammar = rawGrammarItems[(totalCounter) % rawGrammarItems.length];
+                        // 3-Tur: Sintaktik va grammatik savollar (4 ta variant)
+                        let grammar = rawUzGrammarItems[(totalCounter) % rawUzGrammarItems.length];
                         let opts = [grammar.a, ...grammar.fake];
                         let correctAns = grammar.a;
                         opts.sort(() => Math.random() - 0.5);
 
                         questionsData[theme].push({
-                            q: `${grammar.q} (Контекстный вопрос №${totalCounter})`,
+                            q: `${grammar.q} (Kontekstual savol №${totalCounter})`,
                             options: opts,
                             correct: opts.indexOf(correctAns)
                         });
@@ -319,7 +317,7 @@
 
         generate300Questions();
 
-        // Логика работы приложения
+        // Dastur logikasi
         let currentTheme = 1;
         let currentQuestionIndex = 0;
         let score = 0;
@@ -348,14 +346,14 @@
             });
 
             quizCard.innerHTML = `
-                <div class="question-number">Тема ${currentTheme} • Вопрос ${currentQuestionIndex + 1} из ${questions.length}</div>
+                <div class="question-number">${currentTheme}-Mavzu • Savol ${currentQuestionIndex + 1} / ${questions.length}</div>
                 <div class="question-text">${currentQ.q}</div>
                 <div class="options-list">
                     ${optionsHtml}
                 </div>
                 <div class="controls">
-                    <div class="score-track">Правильно: ${score} из ${currentQuestionIndex}</div>
-                    <button class="next-btn" id="next-button" onclick="nextQuestion()">Дальше</button>
+                    <div class="score-track">To'g'ri javoblar: ${score} / ${currentQuestionIndex}</div>
+                    <button class="next-btn" id="next-button" onclick="nextQuestion()">Keyingisi</button>
                 </div>
             `;
         }
@@ -376,7 +374,7 @@
                 allButtons[currentQ.correct].classList.add('correct');
             }
 
-            document.querySelector('.score-track').innerText = `Правильно: ${score} из ${currentQuestionIndex + 1}`;
+            document.querySelector('.score-track').innerText = `To'g'ri javoblar: ${score} / ${currentQuestionIndex + 1}`;
             document.getElementById('next-button').style.display = 'block';
         }
 
@@ -406,15 +404,15 @@
             const questions = questionsData[currentTheme];
             quizCard.innerHTML = `
                 <div class="result-screen">
-                    <h2>Тестирование по Теме ${currentTheme} успешно пройдено!</h2>
+                    <h2>${currentTheme}-Mavzu bo'yicha test yakunlandi!</h2>
                     <div class="result-score">${score} / ${questions.length}</div>
-                    <p>Вы проработали крупный пласт терминологии и грамматики.</p>
-                    <button class="restart-btn" onclick="switchTheme(${currentTheme})">Пройти тему заново</button>
+                    <p>Tibbiy terminlar va grammatika bazasini muvaffaqiyatli topshirdingiz.</p>
+                    <button class="restart-btn" onclick="switchTheme(${currentTheme})">Qaytadan boshlash</button>
                 </div>
             `;
         }
 
-        // Первичный запуск
+        // Birinchi marta yuklanganda ishga tushirish
         renderQuestion();
     </script>
 </body>
