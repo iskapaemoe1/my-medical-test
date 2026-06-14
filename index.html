@@ -3,646 +3,386 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажер: 388 вопросов сессии</title>
+    <title>Медицинское и Языковое Тестирование</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --card: #ffffff;
-            --text: #1f2937;
-            --muted: #4b5563;
-            --border: #e5e7eb;
-            --ok: #10b981;
-            --ok-bg: #f0fdf4;
-            --err: #ef4444;
-            --err-bg: #fff5f5;
+        /* Полностью черная/темная тема */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .quiz-container { background: var(--card); width: 100%; max-width: 650px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 32px; }
-        .progress-container { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 24px; }
-        .progress-bar { height: 100%; width: 0%; background: var(--primary); border-radius: 3px; transition: width 0.3s; }
-        .stats-bar { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
-        .current-score { color: var(--ok); }
-        .question-text { font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; line-height: 1.4; }
-        .options-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
-        .option-item { position: relative; }
-        .option-item input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
-        .option-label { display: flex; align-items: center; padding: 14px 20px; border: 2px solid var(--border); border-radius: 10px; background: #fafafa; font-size: 1rem; transition: all 0.2s; }
-        .option-item:hover .option-label { background: #f3f4f6; }
-        .option-item.correct .option-label { background: var(--ok-bg)!important; border-color: var(--ok)!important; color: var(--ok)!important; font-weight: 600; }
-        .option-item.wrong .option-label { background: var(--err-bg)!important; border-color: var(--err)!important; color: var(--err)!important; font-weight: 600; }
-        .options-container.lock .option-item input { pointer-events: none; }
-        .navigation-box { display: flex; justify-content: space-between; }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
-        .btn-secondary { background: #e5e7eb; color: var(--muted); }
-        .btn-primary { background: var(--primary); color: white; margin-left: auto; }
-        .btn-primary:disabled { background: #cbd5e0; cursor: not-allowed; }
-        .result-screen { display: none; text-align: center; }
-        .result-circle { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--ok); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 800; color: var(--ok); margin: 20px auto; }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #888;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Навигация по темам */
+        .theme-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            background-color: #1e1e1e;
+            color: #b0b0b0;
+            border: 2px solid #333;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: #00adb5;
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            background-color: #00adb5;
+            color: #fff;
+            border-color: #00adb5;
+            box-shadow: 0 0 15px rgba(0, 173, 181, 0.4);
+        }
+
+        /* Контейнер для карточки вопроса */
+        .quiz-container {
+            background-color: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+
+        .question-number {
+            color: #00adb5;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 20px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            color: #ffffff;
+        }
+
+        /* Кнопки вариантов ответов */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #252525;
+            color: #e0e0e0;
+            border: 1px solid #3a3a3a;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background-color: #2d2d2d;
+            border-color: #555;
+        }
+
+        /* Стили при проверке */
+        .option-btn.correct {
+            background-color: #1b5e20 !important;
+            border-color: #4caf50 !important;
+            color: #fff;
+        }
+
+        .option-btn.wrong {
+            background-color: #b71c1c !important;
+            border-color: #f44336 !important;
+            color: #fff;
+        }
+
+        /* Нижняя панель управления */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        .score-track {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .next-btn {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            display: none; /* Покажется только после выбора ответа */
+        }
+
+        .next-btn:hover {
+            background-color: #444;
+        }
+
+        /* Финальный экран результатов темы */
+        .result-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .result-score {
+            font-size: 48px;
+            color: #00adb5;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .restart-btn {
+            background-color: #00adb5;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .restart-btn:hover {
+            background-color: #008c95;
+        }
     </style>
 </head>
 <body>
-<div class="quiz-container">
-    <div id="quizWindow">
-        <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
-        <div class="stats-bar">
-            <span id="questionNumber">Вопрос 1 из 388</span>
-            <span id="liveScore" class="current-score">Успеваемость: 0%</span>
-        </div>
-        <div id="questionText" class="question-text">Загрузка...</div>
-        <form id="optionsForm" class="options-container" onsubmit="event.preventDefault();"></form>
-        <div class="navigation-box">
-            <button id="prevBtn" class="btn btn-secondary" onclick="goBack()">Назад</button>
-            <button id="nextBtn" class="btn btn-primary" onclick="goNext()" disabled>Дальше</button>
-        </div>
+
+    <h1>Онлайн Тестирование</h1>
+    <div class="description">Выберите тему ниже, чтобы начать прохождение тестов</div>
+
+    <div class="theme-tabs">
+        <button class="tab-btn active" onclick="switchTheme(1)">Тема 1</button>
+        <button class="tab-btn" onclick="switchTheme(2)">Тема 2</button>
+        <button class="tab-btn" onclick="switchTheme(3)">Тема 3</button>
     </div>
-    <div id="resultScreen" class="result-screen">
-        <h2>Тестирование полностью завершено!</h2>
-        <div id="resultCircle" class="result-circle">0%</div>
-        <p id="resultScore" style="margin-bottom: 20px;"></p>
-        <button class="btn btn-primary" style="margin: 0 auto;" onclick="restartQuiz()">Пройти заново</button>
-    </div>
-</div>
-<script>
-    const rawData = [
-        ["1:1. \"Побочные действие\" so'zi o'zbekchaga Muolaja ta'siri deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:2. \"Мышечная ткань\" so'zi o'zbekchaga Mushak to'qimasi deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:3. \"Нервная система\" so'zi o'zbekchaga Asab hujayrasi deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:4. \"Челюсть\" so'zi o'zbekchaga Jag' deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:5. \"Воспаление\" so'zi o'zbekchaga Zararlanish deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:6. \"Желудок\" so'zi o'zbekchaga O't pufagi deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:7. \"Десна\" so'zi o'zbekchaga Milk deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:8. \"Ротовая полость\" so'zi o'zbekchaga Og'iz bo'shlig'i deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:9. \"Диагноз\" so'zi o'zbekchaga Tashxis deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:10. \"Вывод\" so'zi o'zbekchaga Xulosa deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:11. \"Гарантия\" so'zi o'zbekchaga Ishonch deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:12. \"Печень\" so'zi o'zbekchaga Jigar deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:13. \"Движение\" so'zi o'zbekchaga Intilish deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:14. \"Единство\" so'zi o'zbekchaga Hamkorlik deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:15. \"Желание\" so'zi o'zbekchaga O'zgarish deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:16. \"Заботливый\" so'zi o'zbekchaga G'amxo'r deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:17. \"Заниматься\" fe'li o'zbekchaga Shug'ullanmoq deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:18. \"Заполнять\" so'zi o'zbekchaga Topshirmoq deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:19. \"Измерять\" so'zi o'zbekchaga O'lchamoq deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:20. \"Количество\" so'zi o'zbekchaga Kafolat deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:21. \"Конфликт\" ruscha so'zi o'zbekchaga Kelishuv deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:22. \"Категория\" so'zi o'zbekchaga Toifa deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:23. \"Слюна\" so'zi o'zbekchaga So'lak deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:24. \"Жидкость\" so'zi o'zbekchaga Suyuqlik deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:25. \"Спинной мозг\" so'zi o'zbekchaga Orqa miya deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:26. \"Начинать\" so'zi o'zbekchaga To'xtatmoq deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:27. \"Натуральный продукт\" so'zi o'zbekchaga Tabiiy mahsulot deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:28. \"Обмен\" ruscha so'zi o'zbekchaga Oshirmoq deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:29. \"Обозначать\" so'zi o'zbekchaga Ko'rsatmoq deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:30. \"Грудная клетка\" so'zi o'zbekchaga Ko'krak qafasi deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:31. \"Ограничение\" ruscha so'zi o'zbekchaga Cheklov deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:32. \"Опасный\" so'zi o'zbekchaga Zararli deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:33. \"Общество\" so'zi o'zbekchaga Muhit deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:34. \"Понимание\" ruscha so'zi o'zbekchaga Tushunish deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:35. \"Клетка\" so'zi o'zbekchaga Hujayra deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:36. \"Промышленность\" so'zi o'zbekchaga Sanoat deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:37. \"Преимущество\" so'zi o'zbekchaga Manfaat deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:38. \"Применять\" so'zi o'zbekchaga Tasdiqlamoq deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:39. \"Подготовить\" so'zi o'zbekchaga Tayyorlamoq deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:40. \"Руководство\" so'zi o'zbekchaga Ta'sischi deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:41. \"Роль\" so'zi o'zbekchaga Ahamiyat deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:42. \"Рост\" so'zi o'zbekchaga Rivojlanish deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:43. \"Свойства\" so'zi o'zbekchaga Xususiyat deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:44. \"Связь\" so'zi o'zbekchaga Munosabat deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:45. \"Снижение\" so'zi o'zbekchaga Kamayish deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:46. \"Создание\" so'zi o'zbekchaga Tashkil etish deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:47. \"Состояние\" so'zi o'zbekchaga Ahvol deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:48. \"Сохранить\" so'zi o'zbekchaga Asramoq deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:49. \"Способность\" so'zi o'zbekchaga Qobiliyat deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:50. \"Срочно\" so'zi o'zbekchaga Tezda deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:51. \"Стремление\" so'zi o'zbekchaga Harakat deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:52. \"Существование\" so'zi o'zbekchaga Mavjudlik deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:53. \"Сфера\" so'zi o'zbekchaga Tarmoq deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:54. \"Творчество\" so'zi o'zbekchaga Ijodkorlik deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:55. \"Точка зрения\" iborasi o'zbekchaga Nuqtai nazar deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:56. \"Требование\" so'zi o'zbekchaga Talab deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:57. \"Уважение\" so'zi o'zbekchaga E'tibor deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:58. \"Уверенность\" so'zi o'zbekchaga Ishonch deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:59. \"Условие\" so'zi o'zbekchaga Sharoit deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:60. \"Участвовать\" so'zi o'zbekchaga Qatnashmoq deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:61. \"Ценность\" so'zi o'zbekchaga Boylik deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:62. \"Цель\" so'zi o'zbekchaga Maqsad deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:63. \"Часть\" so'zi o'zbekchaga Bo'lim deb tarjima qilinadi.", "Верно|Неверно", 1],
-        ["1:64. \"Чувство\" so'zi o'zbekchaga Tuyg'u deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:65. \"Эффективность\" so'zi o'zbekchaga Samaradorlik deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:66. \"Этап\" so'zi o'zbekchaga Bosqich deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:67. \"Явление\" so'zi o'zbekchaga Hodisa deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:68. \"Понятие\" so'zi o'zbekchaga Tushuncha deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:69. \"Влияние\" so'zi o'zbekchaga Ta'sir deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:70. \"Внимание\" so'zi o'zbekchaga Diqqat deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:71. \"Восприятие\" so'zi o'zbekchaga Idrok deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:72. \"Воображение\" so'zi o'zbekchaga Tasavvur deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:73. \"Мышление\" so'zi o'zbekchaga Tafakkur deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:74. \"Речь\" so'zi o'zbekchaga Nutq deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:75. \"Память\" so'zi o'zbekchaga Xotira deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:76. \"Личность\" so'zi o'zbekchaga Shaxs deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:77. \"Деятельность\" so'zi o'zbekchaga Faoliyat deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:78. \"Общение\" so'zi o'zbekchaga Muloqot deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:79. \"Поведение\" so'zi o'zbekchaga Xulq-atvor deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:80. \"Способности\" so'zi o'zbekchaga Qobiliyatlar deb tarjima qilinadi.", "Верно|Неверно", 0],
-        ["1:81. Abu Ali ibn Sino tibbiyot ilmining sultoni hisoblanadi.", "Верно|Неверно", 0],
-        ["1:82. Chechakka qarshi vaksinani Edvard Jenner ishlab chiqqan.", "Верно|Неверно", 0],
-        ["1:83. Penitsillin kashfiyotchisi Aleksandr Fleming hisoblanadi.", "Верно|Неверно", 0],
-        ["1:84. Pasterizatsiya usulini Lui Paster yaratgan.", "Верно|Неверно", 0],
-        ["1:85. Sil tayoqchalarini Robert Kox aniqlagan.", "Верно|Неверно", 0],
-        ["1:86. Ibn Sino \"Kitob ash-Shifo\" asarining muallifi.", "Верно|Неверно", 0],
-        ["1:87. \"Tib qonunlari\" asari 5 ta kitobdan iborat.", "Верно|Неверно", 0],
-        ["1:88. Anatomiya a'zolarning tuzilishini o'rganadi.", "Верно|Неверно", 0],
-        ["1:89. Fiziologiya organizmning hayotiy faoliyatini o'rganadi.", "Верно|Неверно", 0],
-        ["1:90. Gistologiya to'qimalarni o'rganadigan fan.", "Верно|Неверно", 0],
-        ["1:91. Sitologiya hujayrani o'rganadigan fan.", "Верно|Неверно", 0],
-        ["1:92. Kardiologiya yurak kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:93. Nevrologiya asab tizimini o'rganadi.", "Верно|Неверно", 0],
-        ["1:94. Farmakologiya dorivor moddalarni o'rganadi.", "Верно|Неверно", 0],
-        ["1:95. Gigiyena salomatlikni saqlash sharoitlarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:96. Epidemiologiya yuqumli kasalliklarni o'rganadi.", "Верно|Неверно", 0],
-        ["1:97. Patologiya kasallik jarayonlarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:98. Terapiya ichki kasalliklarni davolash san'ati.", "Верно|Неверно", 0],
-        ["1:99. Xirurgiya operatsiya yo'li bilan davolash fani.", "Верно|Неверно", 0],
-        ["1:100. Pediatriya bolalar kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:101. Gerontologiya qarish jarayonlarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:102. Onkologiya xavfli o'smalarni o'rganadi.", "Верно|Неверно", 0],
-        ["1:103. Dermatologiya teri kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:104. Oftalmologiya ko'z kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:105. Psixiatriya ruhiy kasalliklarni o'rganadi.", "Верно|Неверно", 0],
-        ["1:106. Immunologiya organizmning himoya xususiyatlarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:107. Genetika irsiyat va o'zgaruvchanlikni o'rganadi.", "Верно|Неверно", 0],
-        ["1:108. Endokrinologiya ichki sekresiya bezlarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:109. Toksikologiya zaharli moddalarni o'rganadi.", "Верно|Неверно", 0],
-        ["1:110. Rentgenologiya nurlar yordamida tashxis qo'yishni o'rganadi.", "Верно|Неверно", 0],
-        ["1:111. Urologiya siydik yo'llari kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:112. Ginekologiya ayollar kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:113. Akusherlik homiladorlik va tug'ruq jarayonini o'rganadi.", "Верно|Неверно", 0],
-        ["1:114. Gastroenterologiya ovqat hazm qilish a'zolarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:115. Nefrologiya buyrak kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:116. Pulmonologiya o'pka kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:117. Gematologiya qon tizimi kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:118. Revmatologiya biriktiruvchi to'qima kasalliklarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:119. Allergologiya allergiya jarayonlarini o'rganadi.", "Верно|Неверно", 0],
-        ["1:120. Umurtqa pog'onasidagi kasalliklarni o'rganadigan shifokor kim?", "Nefrolog|Vertebrolog|Gematolog|Nevrolog", 1],
-        ["1:121. Soch follikulalari va bosh terisi bilan shug'ullanuvchi shifokor kim?", "Trixolog|Podiatr|Somnolog|Mikolog", 0],
-        ["1:122. Oyoq panjasi muammolari va parvarishi bilan shug'ullanuvchi mutaxassis kim?", "Podiatr|Mikolog|Ortoped|Surdolog", 0],
-        ["1:123. Buyrak faoliyatini o'rganadigan shifokor kim?", "Gepatolog|Immunolog|Nefrolog|Ftiziatr", 2],
-        ["1:124. Uyqu buzilishlarini o'rganuvchi shifokor kim?", "Somnolog|Nevrolog|Psixiatr|Trixolog", 0],
-        ["1:125. Immunitet tizimi bilan shug'ullanuvchi shifokor kim?", "Immunolog|Genetik|Nevrolog|Somnolog", 0],
-        ["1:126. Zambilg'ug' kasalliklarini (gribok) davolovchi shifokor kim?", "Mikolog|Dermatolog|Trixolog|Podiatr", 0],
-        ["1:127. Qon va qon yaratuvchi a'zolarni davolovchi shifokor kim?", "Angioxirurg|Gematolog|Gepatolog|Pulmonolog", 1],
-        ["1:128. Jigar va o't yo'llari bilan shug'ullanuvchi shifokor kim?", "Gepatolog|Neyroxirurg|Gastroenterolog|Mikolog", 0],
-        ["1:129. Markaziy va periferik asab tizimini davolovchi shifokor kim?", "Nevrolog|Vertebrolog|Surdolog|Endokrinolog", 0],
-        ["1:130. Eshitish qobiliyati buzilishlarini o'rganuvchi mutaxassis kim?", "Surdolog|Ototonolog|Logoped|Foniatr", 0],
-        ["1:131. Nafas olish a'zolari kasalliklarini davolovchi shifokor kim?", "Pulmonolog|Ftiziatr|Angioxirurg|Podiatr", 0],
-        ["1:132. Sil kasalligini davolovchi shifokor kim?", "Ftiziatr|Pulmonolog|Onkolog|Inksionist", 0],
-        ["1:133. Tomirlar xirurgiyasi bilan shug'ullanuvchi shifokor kim?", "Angioxirurg|Kardioxirurg|Neyroxirurg|Vertebrolog", 0],
-        ["1:134. Gormonlar va ichki sekresiya bezlarini davolovchi shifokor kim?", "Endokrinolog|Genetik|Androlog|Ginekolog", 0],
-        ["1:135. Qon tomir tizimini o'rganadigan fan sohasi qaysi?", "Angiologiya|Kardiologiya|Miyologiya|Nevrologiya", 0],
-        ["1:136. Bo'g'imlar va biriktiruvchi to'qima kasalliklarini kim davolaydi?", "Revmatolog|Ortoped|Vertebrolog|Travmatolog", 0],
-        ["1:137. Qariyalar salomatligi va kasalliklarini o'rganuvchi shifokor kim?", "Geriatr|Pediatr|Terapevt|Valeolog", 0],
-        ["1:138. O'smalarni davolash bilan shug'ullanuvchi shifokor kim?", "Onkolog|Rentgenolog|Radiolog|Xirurg", 0],
-        ["1:139. Ko'z kasalliklarini davolovchi shifokor kim?", "Oftalmolog|Otolaringolog|Nevrolog|Stomatolog", 0],
-        ["1:140. Teri kasalliklarini davolovchi shifokor kim?", "Dermatolog|Mikolog|Trixolog|Kosmetolog", 0],
-        ["1:141. Allergik reaksiyalarni davolovchi shifokor kim?", "Allergolog|Immunolog|Dermatolog|Terapevt", 0],
-        ["1:142. Ovqat hazm qilish tizimini davolovchi shifokor kim?", "Gastroenterolog|Gepatolog|Proktolog|Xirurg", 0],
-        ["1:143. To'g'ri ichak kasalliklarini davolovchi shifokor kim?", "Proktolog|Urolog|Ginekolog|Gastroenterolog", 0],
-        ["1:144. Siydik-tanosil tizimini davolovchi shifokor kim?", "Urolog|Androlog|Nefrolog|Proktolog", 0],
-        ["1:145. Erkaklar jinsiy salomatligi bilan shug'ullanuvchi shifokor kim?", "Androlog|Urolog|Seksolog|Endokrinolog", 0],
-        ["1:146. Ayollar jinsiy tizimini davolovchi shifokor kim?", "Ginekolog|Akusher|Urolog|Mamolog", 0],
-        ["1:147. Homiladorlik va tug'ruqni qabul qiluvchi shifokor kim?", "Akusher-ginekolog|Pediatr|Neonatolog|Mamolog", 0],
-        ["1:148. Yangi tug'ilgan chaqaloqlar bilan shug'ullanuvchi shifokor kim?", "Neonatolog|Pediatr|Geriatr|Nevrolog", 0],
-        ["1:149. Bolalar shifokori kim?", "Pediatr|Terapevt|Neonatolog|Geriatr", 0],
-        ["1:150. Ichki kasalliklarni operatsiyasiz davolovchi shifokor kim?", "Terapevt|Xirurg|Kardiolog|Nevrolog", 0],
-        ["1:151. Operatsiya yo'li bilan davolovchi shifokor kim?", "Xirurg|Terapevt|Anesteziolog|Travmatolog", 0],
-        ["1:152. Operatsiya vaqtida og'riqsizlantirish bilan shug'ullanuvchi shifokor kim?", "Anesteziolog-reanimatolog|Xirurg|Nevrolog|Kardiolog", 0],
-        ["1:153. Yurak-qon tomir kasalliklarini davolovchi shifokor kim?", "Kardiolog|Kardioxirurg|Angiolog|Terapevt", 0],
-        ["1:154. Quloq, burun va tomoq kasalliklarini davolovchi shifokor kim?", "Otolaringolog (LOR)|Oftalmolog|Stomatolog|Nevrolog", 0],
-        ["1:155. Tish va og'iz bo'shlig'ini davolovchi shifokor kim?", "Stomatolog|Ortodont|Implantolog|LOR", 0],
-        ["1:156. Ruhiy kasalliklarni davolovchi shifokor kim?", "Psixiatriya|Psixolog|Psixoterapevt|Nevrolog", 0],
-        ["1:157. Giyohvandlik va alkogolizmga qarshi davolovchi shifokor kim?", "Narkolog|Psixiatr|Toksikolog|Terapevt", 0],
-        ["1:158. Sut bezlari kasalliklarini o'rganuvchi shifokor kim?", "Mamolog|Ginekolog|Onkolog|Xirurg", 0],
-        ["1:159. Jarohatlar va suyak sinishlarini davolovchi shifokor kim?", "Travmatolog-ortoped|Xirurg|Vertebrolog|Podiatr", 0],
-        ["1:160. Yuqumli kasalliklarni davolovchi shifokor kim?", "Infeksionist|Epidemiolog|Bakteriolog|Virolog", 0],
-        ["1:161. Ovoz buzilishlarini davolovchi mutaxassis kim?", "Foniatr|Logoped|LOR|Surdolog", 0],
-        ["1:162. Nutq nuqsonlarini tuzatuvchi mutaxassis kim?", "Logoped|Foniatr|Psixolog|Pediatr", 0],
-        ["1:163. Rentgen va KT tasvirlarini tahlil qiluvchi shifokor kim?", "Radiolog (Rentgenolog)|Onkolog|Nevrolog|Uziist", 0],
-        ["1:164. Irsiy kasalliklarni o'rganuvchi shifokor kim?", "Genetik|Embriolog|Immunolog|Pediatr", 0],
-        ["1:165. Sud-tibbiy專 Ekspertizasini o'tkazuvchi shifokor kim?", "Sud-tibbiy ekspert|Patologoanatom|Kriminalist|Toksikolog", 0],
-        ["1:166. Murdalarni yorib, o'lim sababini aniqlovchi shifokor kim?", "Patologoanatom|Sud ekspert|Xirurg|Gistolog", 0],
-        ["1:167. Sog'lom turmush tarzini targ'ib qiluvchi mutaxassis kim?", "Valeolog|Nutrisiolog|Dietolog|Gigiyenist", 0],
-        ["1:168. To'g'ri ovqatlanishni belgilovchi mutaxassis kim?", "Nutrisiolog (Dietolog)|Valeolog|Gastroenterolog|Terapevt", 0],
-        ["1:169. Reabilitatsiya va fizioterapiya bilan shug'ullanuvchi shifokor kim?", "Reabilitolog|Fizioterapevt|Kineziolog|Ortoped", 0],
-        ["1:170. O'zbek tili qachon davlat tili maqomini olgan?", "1989-yil 21-oktyabr|1991-yil 31-avgust|1992-yil 8-dekabr|1993-yil 2-sentyabr", 0],
-        ["1:171. \"Imkoniyat\" so'zining ruscha tarjimasi qaysi?", "Возможность|Обязанность|Проект|Состав", 0],
-        ["1:172. \"Mas'uliyat\" so'zining ruscha tarjimasi qaysi?", "Обязанность / Ответственность|Документ|Категория|Решение", 0],
-        ["1:173. \"Loyiha\" so'zining ruscha tarjimasi qaysi?", "Проект|План|Закон|Вывод", 0],
-        ["1:174. \"Tarkib\" so'zining ruscha tarjimasi qaysi?", "Состав|Раздел|Группа|Качество", 0],
-        ["1:175. \"Hujjat\" so'zining ruscha tarjimasi qaysi?", "Документ|Запись|Флаг|Приказ", 0],
-        ["1:176. \"Qaror\" so'zining ruscha tarjimasi qaysi?", "Решение|Постановление|Обсуждение|Предложение", 0],
-        ["1:177. \"Toifa\" so'zining ruscha tarjimasi qaysi?", "Категория|Степень|Группа|Вид", 0],
-        ["1:178. \"Qonun\" so'zining ruscha tarjimasi qaysi?", "Закон|Правило|Кодекс|Указ", 0],
-        ["1:179. \"Xulosa\" so'zining ruscha tarjimasi qaysi?", "Вывод / Заключение|Мнение|Идея|Текст", 0],
-        ["1:180. \"Farmon\" so'zining ruscha tarjimasi qaysi?", "Указ|Приказ|Закон|Решение", 0],
-        ["1:181. \"Buyruq\" so'zining ruscha tarjimasi qaysi?", "Приказ|Указ|Задание|Письмо", 0],
-        ["1:182. \"Bayonnoma\" so'zining ruscha tarjimasi qaysi?", "Протокол|Отчет|Справка|Акт", 0],
-        ["1:183. \"Hisobot\" so'zining ruscha tarjimasi qaysi?", "Отчет|Справка|План|Договор", 0],
-        ["1:184. \"Ma'lumotnoma\" so'zining ruscha tarjimasi qaysi?", "Справка|Письмо|Паспорт|Карта", 0],
-        ["1:185. \"Shartnoma\" so'zining ruscha tarjimasi qaysi?", "Договор / Контракт|Соглашение|Заявка|Объявление", 0],
-        ["1:186. \"Ariza\" so'zining ruscha tarjimasi qaysi?", "Заявление|Жалоба|Письмо|Запрос", 0],
-        ["1:187. \"Tushuntirish xati\" iborasining ruscha tarjimasi qaysi?", "Объяснительная записка|Докладная записка|Письмо|Справка", 0],
-        ["1:188. \"Bildirishnoma\" so'zining ruscha tarjimasi qaysi?", "Уведомление / Докладная|Объявление|Реклама|Приказ", 0],
-        ["1:189. \"E'lon\" so'zining ruscha tarjimasi qaysi?", "Объявление|Реклама|Плакат|Газета", 0],
-        ["1:190. \"Tavsifnoma\" so'zining ruscha tarjimasi qaysi?", "Характеристика|Описание|Резюме|Диплом", 0],
-        ["1:191. \"Tarjimai hol\" so'zining ruscha tarjimasi qaysi?", "Автобиография|Биография|История|Резюме", 0],
-        ["1:192. \"Ishonchnoma\" so'zining ruscha tarjimasi qaysi?", "Доверенность|Паспорт|Справка|Квитанция", 0],
-        ["1:193. \"Tilxat\" so'zining ruscha tarjimasi qaysi?", "Расписка|Письмо|Чек|Билет", 0],
-        ["1:194. \"Dalolatnoma\" so'zining ruscha tarjimasi qaysi?", "Акт|Протокол|Справка|Закон", 0],
-        ["1:195. \"Yo'riqnoma\" so'zining ruscha tarjimasi qaysi?", "Инструкция|Правило|Учебник|План", 0],
-        ["1:196. \"Tavsiyanoma\" so'zining ruscha tarjimasi qaysi?", "Рекомендация|Характеристика|Диплом|Справка", 0],
-        ["1:197. \"Taklifnoma\" so'zining ruscha tarjimasi qaysi?", "Приглашение|Билет|Письмо|Афиша", 0],
-        ["1:198. \"Raddiya\" so'zining ruscha tarjimasi qaysi?", "Опровержение|Отказ|Жалоба|Ответ", 0],
-        ["1:199. \"Da'vo ariza\" iborasining ruscha tarjimasi qaysi?", "Исковое заявление|Жалоба|Протест|Договор", 0],
-        ["1:200. Ot so'z turkumi qanday so'roqlarga javob bo'ladi?", "Kim? Nima? Qayer?|Qanday? Qanaqa?|Nechta? Qancha?|Nima qildi?", 0],
-        ["1:201. Sifat so'z turkumi qanday so'roqlarga javob bo'ladi?", "Qanday? Qanaqa? Qaysi?|Kim? Nima?|Nechta? Qancha?|Qachon?", 0],
-        ["1:202. Son so'z turkumi qanday so'roqlarga javob bo'ladi?", "Nechta? Qancha? Nechanchi?|Kim? Nima?|Qanday? Qaysi?|Qachon?", 0],
-        ["1:203. Sonlar ma'nosiga ko'ra necha turga bo'linadi?", "6 ta|4 ta|5 ta|3 ta", 0],
-        ["1:204. Sifatlar ma'nosiga ko'ra qanday turlarga bo'linadi?", "Asliy va nisbiy|Sodda va murakkab|Ega va kesim|Jonli", 0],
-        ["1:205. O'zbek tilida nechta kelishik bor?", "6 ta|4 ta|5 ta|7 ta", 0],
-        ["1:206. Bosh kelishikning qo'shimchasi qaysi?", "Qo'shimchasi yo'q|-ning|-ni|-ga", 0],
-        ["1:207. Qaratqich kelishigining qo'shimchasi qaysi?", "-ning|-ni|-ga|-da", 0],
-        ["1:208. Tushum kelishigining qo'shimchasi qaysi?", "-ni|-ning|-ga|-da", 0],
-        ["1:209. Jo'nalish kelishigining qo'shimchasi qaysi?", "-ga (-ka, -qa)|-ni|-da|-dan", 0],
-        ["1:210. O'rin-payt kelishigining qo'shimchasi qaysi?", "-da|-dan|-ga|-ning", 0],
-        ["1:211. Chiqish kelishigining qo'shimchasi qaysi?", "-dan|-da|-ga|-ni", 0],
-        ["1:212. Egalik qo'shimchalari nimani bildiradi?", "Shaxs va narsaning qarashliligini|Harakatni|Miqdorni|Vaqtni", 0],
-        ["1:213. O'zbek tilida nechta shaxs bor?", "3 ta|2 ta|4 ta|5 ta", 0],
-        ["1:214. I shaxs birlik egalik qo'shimchasi qaysi?", "-im, -m|-ing, -ng|-i, -si|-imiz", 0],
-        ["1:215. II shaxs birlik egalik qo'shimchasi qaysi?", "-ing, -ng|-im, -m|-i, -si|-ingiz", 0],
-        ["1:216. III shaxs birlik egalik qo'shimchasi qaysi?", "-i, -si|-im|-ing|-lari", 0],
-        ["1:217. I shaxs ko'plik egalik qo'shimchasi qaysi?", "-imiz, -miz|-ingiz|-lari|-im", 0],
-        ["1:218. II shaxs ko'plik egalik qo'shimchasi qaysi?", "-ingiz, -ngiz|-imiz|-lari|-ing", 0],
-        ["1:219. III shaxs ko'plik egalik qo'shimchasi qaysi?", "-lari / -i, -si|-imiz|-ingiz|-miz", 0],
-        ["1:220. Kelishiklar necha turga bo'linadi?", "Belgili va belgisiz|Sodda|Asliy|Jonli", 0],
-        ["1:221. \"Kitobim\" so'zidagi qo'shimcha turi qaysi?", "Egalik qo'shimchasi|Kelishik|Ko'plik|So'z yasovchi", 0],
-        ["1:222. \"Daftarning\" so'zi qaysi kelishikda?", "Qaratqich kelishigi|Tushum|Jo'nalish|O'rin-payt", 0],
-        ["1:223. \"Maktabni\" so'zi qaysi kelishikda?", "Tushum kelishigi|Bosh|Qaratqich|Chiqish", 0],
-        ["1:224. \"Uyni\" so'zi qaysi kelishikda?", "Tushum kelishigi|Jo'nalish|O'rin|Chiqish", 0],
-        ["1:225. \"Kasalxonaga\" so'zi qaysi kelishikda?", "Jo'nalish kelishigi|O'rin|Chiqish|Bosh", 0],
-        ["1:226. \"Xonada\" so'zi qaysi kelishikda?", "O'rin-payt kelishigi|Chiqish|Jo'nalish|Qaratqich", 0],
-        ["1:227. \"Dorixonadan\" so'zi qaysi kelishikda?", "Chiqish kelishigi|O'rin|Jo'nalish|Tushum", 0],
-        ["1:228. Ko'plik qo'shimchasi qaysi?", "-lar|-imiz|-ning|-da", 0],
-        ["1:229. Olmosh so'z turkumi nimani bildiradi?", "Ot, sifat, son o'rnida qo'llaniladi|Nomni|Belgini|Harakatni", 0],
-        ["1:230. Kishilik olmoshlarini ko'rsating.", "Men, sen, u, biz, siz, ular|Bu, shu|Kim? Nima?|Hamma", 0],
-        ["1:231. Ko'rsatish olmoshlarini ko'rsating.", "Bu, shu, o'sha, ana u|Men, sen|O'zi|Kimdir", 0],
-        ["1:232. O'zlik olmoshi qaysi?", "O'z|Hamma|Hech kim|Siz", 0],
-        ["1:233. So'roq olmoshlarini ko'rsating.", "Kim? Nima? Qachon?|Men, sen|Bu, shu|Barcha", 0],
-        ["1:234. Belgilash olmoshlarini ko'rsating.", "Hamma, barcha, bari|Hech kim|Kimdir|Men", 0],
-        ["1:235. Bo'lishsizlik olmoshlarini ko'rsating.", "Hech kim, hech nima|Kimdir|O'z|Bu", 0],
-        ["1:236. Gumon olmoshlarini ko'rsating.", "Kimdir, nimadir|Hamma|Hech kim|Men", 0],
-        ["1:237. Fe'l so'z turkumi qanday so'roqlarga javob bo'ladi?", "Nima qildi? Nima qiladi?|Kim? Nima?|Qanday?|Nechta?", 0],
-        ["1:238. Fe'llar zamonga ko'ra necha turga bo'linadi?", "3 turga|2 turga|4 turga|5 turga", 0],
-        ["1:239. O'tgan zamon fe'lining qo'shimchasi qaysi?", "-di, -gan|-yapti|-ar|-sa", 0],
-        ["1:240. Hozirgi zamon fe'lining qo'shimchasi qaysi?", "-yapti, -moqda|-di|-gan|-ar", 0],
-        ["1:241. Kelgusi zamon fe'lining qo'shimchasi qaysi?", "-ar / -mas, -ajak|-di|-yapti|-gan", 0],
-        ["1:242. Ravish so'z turkumi nimani bildiradi?", "Harakatning belgisini, vaqtini|Nomini|Miqdorini|Rangini", 0],
-        ["1:243. Ravishlar ma'nosiga ko'ra necha turga bo'linadi?", "4 turga|3 turga|5 turga|6 turga", 0],
-        ["1:244. Holat ravishlarini ko'rsating.", "Tez, asta, sekin, piyoda|Bugun, kecha|Ko'p, kam|Uydan", 0],
-        ["1:245. Payt ravishlarini ko'rsating.", "Bugun, ertaga, hozir|Uzoq, yaqin|Kam, mo'l|Yaxshi", 0],
-        ["1:246. O'rin ravishlarini ko'rsating.", "Yaqin, uzoq, oldinga|Sekin, tez|Ertaga|Ko'p", 0],
-        ["1:247. Miqdor-daraja ravishlarini ko'rsating.", "Ko'p, oz, kam, juda|Tez, sekin|Kecha|Uзоq", 0],
-        ["1:248. Ko'makchilar nimaga xizmat qiladi?", "So'zlarni o'zaro bog'lashga|Gaplarni ajratishga|Yangi so'z yasashga|Harakatga", 0],
-        ["1:249. Sof ko'makchilarni ko'rsating.", "Bilan, uchun, kabi, sayin|Keyin, oldin|Tashqari|Qarab", 0],
-        ["1:250. Bog'lovchilar vazifasi nima?", "Gap bo'laklari va gaplarni bog'laydi|Ma'noni o'zgartiradi|Hissiyotni|So'roqni", 0],
-        ["1:251. Teng bog'lovchilarni ko'rsating.", "Va, hamda, lekin, ammo|Chunki|Go'yo|Ya'ni", 0],
-        ["1:252. Yuklamalar qanday vazifani bajaradi?", "So'z yoki gapга ma'no beradi|Bog'laydi|Egalikni|Vaqtni", 0],
-        ["1:253. So'roq yuklamalarini ko'rsating.", "-mi, -chi, -a, -ya|Faqat, gina|Ham, hatto|Xuddi", 0],
-        ["1:254. Ayruv yuklamalarini ko'rsating.", "Faqat, gina, faqatgina|-mi, -chi|Hatto, ham|Axir", 0],
-        ["1:255. Kuchaytiruv yukламarini ko'rsating.", "Ham, hatto, -da, -oq|Faqat|-mi|Go'yo", 0],
-        ["1:256. O'zbek tilida gap bo'laklari nechaga bo'linadi?", "2 turga (Bosh va ikkinchi)|3 turga|4 turga|Bo'linmaydi", 0],
-        ["1:257. Gapning bosh bo'laklari qaysilar?", "Ega va kesim|To'ldiruvchi va hol|Aniqlovchi|Kesim va hol", 0],
-        ["1:258. Ega qanday so'roqlarga javob bo'ladi?", "Kim? Nima? Qayer?|Nima qildi?|Qanday?|Qachon?", 0],
-        ["1:259. Kesim qanday so'roqlarga javob bo'ladi?", "Nima qildi? Kimdir? Qanday?|Kim? Nima?|Qayerda?|Qancha?", 0],
-        ["1:260. Gapning ikkinchi darajali bo'laklari qaysilar?", "Aniqlovchi, to'ldiruvchi, hol|Ega, kesim|Aniqlovchi|To'ldiruvchi", 0],
-        ["1:261. Aniqlovchi qanday so'roqlarga javob bo'ladi?", "Qanday? Qanaqa? Kimning?|Kimni? Nimani?|Qachon?|Nima qildi?", 0],
-        ["1:262. To'ldiruvchi qanday so'roqlarga javob bo'ladi?", "Kimni? Nimani? Kimga?|Qanday? Qanaqa?|Qachon?|Kim? Nima?", 0],
-        ["1:263. Hol qanday so'roqlarga javob bo'ladi?", "Qachon? Qayerda? Qanday?|Kim? Nima?|Kimning?|Nima qildi?", 0],
-        ["1:264. Gap ma'no va maqsadiga ko'ra necha turga bo'linadi?", "4 turga|3 turga|2 turga|5 turga", 0],
-        ["1:265. Gap tuzilishiga ko'ra necha turga bo'linadi?", "Sodda va qo'shma gaplar|Darak va so'roq|Egalik|To'liq", 0],
-        ["1:266. Sodda gap nima?", "Bitta gramatika asosga ega gap|Ikki yoki ortiq qismli|Egasiz gap|Undov gap", 0],
-        ["1:267. Qo'shma gap nima?", "Ikki yoki ortiq sodda gapning bog'lanishi|Bitta egasi bor|Sifatlardan iborat|So'roq", 0],
-        ["1:268. \"Men talabaman.\" gapi maqsada ko'ra qanday gap?", "Darak gap|So'roq gap|Buyruq gap|Istak gap", 0],
-        ["1:269. \"Siz kimsiz?\" gapi maqsada ko'ra qanday gap?", "So'roq gap|Darak gap|Buyruq gap|Undov gap", 0],
-        ["1:270. \"Kitobni o'qi!\" gapi maqsada ko'ra qanday gap?", "Buyruq gap|Darak gap|So'roq gap|Istak gap", 0],
-        ["1:271. \"Yaxshi shifokor bo'lmoqchiman.\" gapi qanday gap?", "Istak / istak-orzu gapi|Buyruq gap|So'roq gap|Qo'shma gap", 0],
-        ["1:272. Gapda ega ostiga qanday chiziq chiziladi?", "Bitta to'g'ri chiziq|Ikkita to'g'ri chiziq|To'lqinli|Nuqta-punktir", 0],
-        ["1:273. Gapda kesim ostiga qanday chiziq chiziladi?", "Ikkita to'g'ri chiziq|Bitta to'g'ri chiziq|To'lqinli|Siniq", 0],
-        ["1:274. Gapda aniqlovchi ostiga qanday chiziq chiziladi?", "To'lqinli chiziq|Bitta to'g'ri chiziq|Ikkita|Nuqta-punktir", 0],
-        ["1:275. Gapda to'ldiruvchi ostiga qanday chiziq chiziladi?", "Uzun-uzun (punktir) chiziq|To'lqinli|Ikkita|To'g'ri", 0],
-        ["1:276. Gapda hol ostiga qanday chiziq chiziladi?", "Nuqta-punktir chiziq|To'lqinli|Ikkita|To'g'ri", 0],
-        ["1:277. Sinonim so'zlar nima?", "Yozilishi har xil, ma'nosi bir xil so'zlar|Yozilishi bir xil, ma'nosi har xil|Zid|Yangi", 0],
-        ["1:278. Antonim so'zlar nima?", "Zid (teskari) ma'noli so'zlar|Ma'nodosh|Yozilishi bir xil|Eski", 0],
-        ["1:279. Omonim so'zlar nima?", "Yozilishi bir xil, ma'nosi har xil so'zlar|Zid|Tarixiy|Tarjima qilinmaydigan", 0],
-        ["1:280. Paronim so'zlar nima?", "Aytilishi/yozilishi yaqin, ma'nosi har xil|Ma'nosi bir xil|Teskari|Ko'p ma'noli", 0],
-        ["1:281. Neologizm nima?", "Yangi paydo bo'lgan so'zlar|Eski so'zlar|Zid|Sheva", 0],
-        ["1:282. Arxaizm nima?", "Iste'moldan chiqqan eski so'zlar|Yangi|Tibbiy atamalar|Chet tildan kirgan", 0],
-        ["1:283. Sinonimlarni ko'rsating.", "Chiroyli, go'zal, xushro'y|Katta, kichik|Kala, ko'z|Oq, qora", 0],
-        ["1:284. Antonimlarni ko'rsating.", "Baland, past|Katta, ulkan|Yaxshi, soz|Qizil, nordon", 0],
-        ["1:285. Omonimlarni ko'rsating.", "Ot (hayvon) / Ot (fe'l)|Yuz, chehra|Issiq, sovuq|Shirin", 0],
-        ["1:286. Paronimlarni ko'rsating.", "Sodda (sada) / Sado|Yaxshi, yomon|Uydan, uyingiz|Yugurdi", 0],
-        ["1:287. Ibora (Frazeologizm) nima?", "Ko'chma ma'nodagi turg'un so'z birikmasi|Sodda gap|Kelishik|Yangi", 0],
-        ["1:288. \"Yuragi bo'g'ziga keldi\" iborasi ma'nosi nima?", "Qattiq qo'rqdi|Xursand bo'ldi|Xafa bo'ldi|Charchadi", 0],
-        ["1:289. \"Tili uzun\" iborasi ma'nosi nima?", "Aybdorligi yo'q, beayb, g'olib|Ko'p gapiradigan|Kasal odam|Yolg'onchi", 0],
-        ["1:290. \"Tepasiga kelmoq\" iborasi ma'nosi nima?", "Yaqinlashmoq, kelib qolmoq|Uxlash|Yordam berish|Urmoq", 0],
-        ["1:291. \"Ko'z yummoq\" iborasi ma'nosi nima?", "Vafot etmoq yoki e'tibor bermaslik|Uxlamoq|Yig'lamoq|Ko'rish", 0],
-        ["1:292. \"O'pkasi to'lmoq\" iborasi ma'nosi nima?", "Yig'lamoqdan berib qolmoq|Nafas ololmaslik|Kulmoq|Yugurmoq", 0],
-        ["1:293. Tasviriy ifoda nima?", "Nomini to'g'ridan-to'g'ri aytmay, tasvirlab aytish|Rasm chizish|Sifatlash|Antonim", 0],
-        ["1:294. \"Oq oltin\" tasviriy ifodasi nimani bildiradi?", "Paxta|Guruch|Tuz|Sut", 0],
-        ["1:295. \"Qora oltin\" tasviriy ifodasi nimani bildiradi?", "Neft / Ko'mir|Paxta|Temir|Tuproq", 0],
-        ["1:296. \"Zangori kema\" tasviriy ifodasi nimani bildiradi?", "Kosmik kema|Samolyot|Traktor|Televizor", 3],
-        ["1:297. \"Sahro kemasi\" tasviriy ifodasi qaysi hayvonga nisbatan ishlatiladi?", "Tuya|Ot|Eshak|Arslon", 0],
-        ["1:298. \"O'rmon podshohi\" tasviriy ifodasi qaysi hayvonga tegishli?", "Arslon|Ayiq|Bo'ri|Yo'lbars", 0],
-        ["1:299. Biriktiruvchi to'qima o'zbek tilida qanday nomlanadi?", "Biriktiruvchi to'qimasi|Mushak to'qimasi|Asab|Epiteliy", 0],
-        ["1:300. Epiteliy to'qimasi tanada qayerda joylashgan?", "Teri va a'zolarning tashqi qavatida|Suyaklarda|Mushaklarda|Miyada", 0],
-        ["1:301. To'qimalar necha turga bo'linadi?", "4 turga (Epiteliy, biriktiruvchi, mushak, asab)|3|2|5", 0],
-        ["1:302. Organizm tizimi tarkibiga nimalar kiradi?", "A'zolar va to'qimalar|Faqat suyaklar|Faqat qon|Faqat teri", 0],
-        ["1:303. O'zbek tilida urg'u odatda so'zning qaysi bo'g'iniga tushadi?", "Oxirgi bo'g'inga|Birinchi|O'rtadagi|Tushmaydi", 0],
-        ["1:304. Bo'g'in nima?", "Bir havo zarbi bilan aytiladigan tovushlar guruhi|So'z birikmasi|Harflar|Gap", 0],
-        ["1:305. O'zbek tilida nechta unli harf bor?", "6 ta|10 ta|5 ta|8 ta", 0],
-        ["1:306. O'zbek tilida unli tovushlar soni nechta?", "6 ta|5 ta|7 ta|9 ta", 0],
-        ["1:307. Undosh harflar soni nechta?", "23 ta (24 ta tovush)|21 ta|25 ta|20 ta", 0],
-        ["1:308. O'zbek tilida \"sh\" va \"ch\" qanday harflar hisoblanadi?", "Harflar birikmasi (Digraf)|Alohida tovush emas|Unli|Belgi", 0],
-        ["1:309. Tutuq belgisi (') vazifasi nima?", "Tovushni ajratib va cho'zib aytish uchun xizmat qiladi|Urg'u|Egalik|Savol", 0],
-        ["1:310. Juft so'zlarni ko'rsating.", "Aka-uka, ota-ona, kecha-kunduz|Katta-katta|Yaxshi shifokor|Dorixona", 0],
-        ["1:311. Takroriy so'zlarni ko'rsating.", "Katta-katta, sekin-sekin|Ota-ona|Go'zal qiz|Yugurib", 0],
-        ["1:312. Qisqartma so'zlar qaysi bandda berilgan?", "OTM, ToshPTI, BMT, AQSH|Institut|Shifokor|Viloyat", 0],
-        ["1:313. Qo'shma otlar qanday yoziladi?", "Qo'shib yoki chiziqcha bilan|Faqat alohida|Bosh harf bilan|Yozilmaydi", 0],
-        ["1:314. \"Oshqozon\" so'zi qanday so'z tarkibiga kiradi?", "Qo'shma so'z (ot)|Sodda so'z|Juft so'z|Takroriy so'z", 0],
-        ["1:315. \"Yurak-qon tomir\" so'zi qanday yoziladi?", "Chiziqcha (defis) bilan|Qo'shib|Alohida|Bosh harf bilan", 0],
-        ["1:316. Matn nima?", "Mazmunan va gramatik bog'langan gaplar guruhi|Iboralar|Alohida so'zlar|Lug'at", 0],
-        ["1:317. Matnning asosiy qismlari qaysilar?", "Kirish, asosiy qism, xulosa|Ega va kesim|Sarlavha|Abzas", 0],
-        ["1:318. Nutq uslublari nechaga bo'linadi?", "5 ta asosiy uslub bor|3 ta|4 ta|6 ta", 0],
-        ["1:319. Tibbiy darsliklar va maqolalar qaysi uslubda yoziladi?", "Ilmiy uslubda|Rasmiy uslubda|Badiiy uslubda|Publisistik", 0],
-        ["1:320. Kasalxona hujjatlari va buyruqlar qaysi uslubga kiradi?", "Rasmiy-idoraviy uslub|Ilmiy uslub|So'zlashuv|Badiiy", 0],
-        ["1:321. Gazeta va jurnallardagi maqolalar qaysi uslubда bo'ladi?", "Publisistik uslub|Ilmiy uslub|Rasmiy uslub|Badiiy uslub", 0],
-        ["1:322. Roman va hikoyalar qaysi uslubda yoziladi?", "Badiiy uslub|Ilmiy uslub|Rasmiy uslub|So'zlashuv", 0],
-        ["1:323. Kundalik hayotda odamlar o'zaro qaysi uslubda gaplashadi?", "So'zlashuv uslubi|Ilmiy uslub|Badiiy uslub|Rasmiy uslub", 0],
-        ["1:324. Ilmiy uslubning основной xususiyati nima?", "Anriqlik, mantiqiylik va atamalar|Hissiyotga boylik|Qisqartmalar|Erkin", 0],
-        ["1:325. Rasmiy uslubning xususiyati nima?", "Standart shakllar va qat'iylik|Ko'chma ma'nolar|Sheva so'zlari|Mubolag'a", 0],
-        ["1:326. Badiiy uslubда nimalardan keng foydalaniladi?", "Tasviriy vositalar, ko'chma ma'nolar|Atamalardan|Qonunlardan|Raqamlardan", 0],
-        ["1:327. Egalik qo'shimchasi mavjud so'zni toping.", "Uyim|Maktabdan|Kitobni|Yozdi", 0],
-        ["1:328. Kelishik qo'shimchali so'zni toping.", "Ukaga|Dafgaring|Bolalar|Yaxshi", 0],
-        ["1:329. Ko'plik qo'shimchasi bor so'zni aniqlang.", "Shifokorlar|Dori|Singlim|Toshkentda", 0],
-        ["1:330. Kishilik olmoshi bor gap qaysi?", "Men institutda o'qiyman.|Bu kitob yangi.|Hamma keldi.|O'zimiz bajardik.", 0],
-        ["1:331. Ko'rsatish olmoshi bor gap qaysi?", "Shu shifoxona juda katta.|Biz keldik.|Hech kim yo'q.|Kim keldi?", 0],
-        ["1:332. O'tgan zamon fe'li bor gap qaysi?", "U shifokor bo'ldi.|Men o'qiyapman.|Ertaga keladi.|Dars boshlanadi.", 0],
-        ["1:333. Hozirgi zamon fe'li bor gap qaysi?", "Hamshira dori beryapti.|U keldi.|O'qiydi.|Dori tayyorlandi.", 0],
-        ["1:334. Kelgusi zamon fe'li bor gap qaysi?", "Ertaga imtihon topshiramiz.|Kecha o'qidim.|Hozir yozyapti.|Tugatdim.", 0],
-        ["1:335. Payt ravishi bor gapni toping.", "Bugun ob-havo yaxshi.|U sekin yuradi.|Ko'p gapirma.|Oldinga yur.", 0],
-        ["1:336. Holat ravishi bor gapni toping.", "Talaba tez gapirdi.|Ertaga kelamiz.|Uzoqqa ketdi.|Ozgina dam ol.", 0],
-        ["1:337. O'rin ravishi bor gapni aniqlang.", "U orqaga qaradi.|Hozir dars.|Yaxshi o'qi.|Ko'p ishladi.", 0],
-        ["1:338. Miqdor ravishi bor gap qaysi?", "U bugun juda ko'p o'qidi.|Asta yurdi.|Kecha keldi.|Yaqinda turadi.", 0],
-        ["1:339. Sof ko'маchi qatnashgan gap qaysi?", "Siz uchun dori tayyorladim.|Keyin kelaman.|Tashqariga chiqdi.|Uyга qarab", 0],
-        ["1:340. Bog'lovchi qatnashgan gap qaysi?", "Anvar va Shaxzod talabalar.|Men ham boraman.|Faqat sen qolding.|Keldilarmi?", 0],
-        ["1:341. Yuklama qatnashgan gap qaysi?", "Siz ham kelasizmi?|Kitob va daftar.|U institutga ketdi.|Dars tugadi.", 0],
-        ["1:342. Gapda ega vazifasidagi so'zni toping: \"Shifokor bemorni davoladi.\"", "Shifokor|Bemorni|Davoladi|Ega yo'q", 0],
-        ["1:343. Gapda kesimni aniqlang: \"Biz imtihon topshiryapmiz.\"", "Topshiryapmiz|Biz|Imtihon|Asos yo'q", 0],
-        ["1:344. Gapda aniqlovchini toping: \"Yangi shifoxona ochildi.\"", "Yangi|Shifoxona|Ochildi|Yo'q", 0],
-        ["1:345. Gapda to'ldiruvchini toping: \"Hamshira ukol qildi.\"", "Ukol|Hamshira|Qildi|Yo'q", 0],
-        ["1:346. Gapda holni aniqlang: \"U darsga piyoda keldi.\"", "Piyoda|U|Darsga|Keldi", 0],
-        ["1:347. Antonim juftlikni toping.", "Katta - kichik|Ulkan - azim|Chiroyli - suluv|Yaxshi - soz", 0],
-        ["1:348. Sinonim juftlikni toping.", "Fikr - o'y|Oq - qora|Keldi - ketdi|Uzoq - yaqin", 0],
-        ["1:349. Omonim so'zni aniqlang.", "Yuz|Chiroyli|Kitob|Talaba", 0],
-        ["1:350. Paronim juftlikni toping.", "Sodda / Sada|Katta / Ulkan|Yaxshi / Yomon|Shakar / Tuz", 0],
-        ["1:351. Frazeologizm (ibora) bor gap qaysi?", "Uning qattiq jahli chiqdi (yuragi bo'g'ziga keldi).|Men kitob o'qidim.|U shifokor bo'lib ishlaydi.|Kasalxona yangi.", 0],
-        ["1:352. Tasviriy ifoda bor gapni toping.", "Oq oltin karvonlari yo'lga chiqdi.|Paxta terimi boshlandi.|O'simliklar foydali.|Jigar muhim a'zo.", 0],
-        ["1:353. Qo'shma ot bor qatorni ko'rsating.", "Oshqozon, qon-tomir|Yurak, o'pka|Shifokor, hamshira|Dori, ukol", 0],
-        ["1:354. Juft so'z bor qatorni aniqlang.", "Ota-ona, aka-uka|Katta-katta|Toshkent shahri|Oliy ta'lim", 0],
-        ["1:355. Takroriy so'з bor gapni toping.", "Hamshira sekin-sekin yurdi.|U dori ichdi.|Ota-onam keldilar.|Dars boshlandi.", 0],
-        ["1:356. Qisqartma so'z qatnashgan gap qaysi?", "U ToshPTI talabasi.|Men institutda o'qiyman.|Shifoxona juda katta.|Vaksina olindi.", 0],
-        ["1:357. Tutuq belgili so'zni ko'rsating.", "Mas'uliyat|Maktab|Shifokor|Bemor", 0],
-        ["1:358. O'zbek tilida nechta unli harf bor?", "6 ta|10 ta|5 ta|8 ta", 0],
-        ["1:359. \"Shifokor\" so'zi qaysi со'з turkumiga kiradi?", "Ot|Sifat|Fe'l|Ravish", 0],
-        ["1:360. \"Foydali\" so'zi qaysi so'z turkumiga kiradi?", "Sifat|Ot|Son|Olmosh", 0],
-        ["1:361. \"Uchta\" so'zi qaysi so'z turkumiga kiradi?", "Son|Sifat|Ot|Fe'l", 0],
-        ["1:362. \"Yozmoq\" so'zi qaysi so'z turkumiga kiradi?", "Fe'l|Ot|Sifat|Ravish", 0],
-        ["1:363. \"Tez\" so'zi qaysi so'z turkumiga kiradi?", "Ravish|Ot|Son|Olmosh", 0],
-        ["1:364. \"Ular\" so'zi qaysi so'z turkumiga kiradi?", "Olmosh|Ot|Sifat|Fe'l", 0],
-        ["1:365. \"Uchun\" so'zi nima?", "Ko'makchi|Bog'lovchi|Yuklama|Fe'l", 0],
-        ["1:366. \"Lekin\" so'zi nima?", "Bog'lovchi|Ko'makchi|Yuklama|Ot", 0],
-        ["1:367. \"Faqat\" so'zi nima?", "Yuklama|Bog'lovchi|Ko'makchi|Sifat", 0],
-        ["1:368. \"Toshkent\" so'zi turi", "Atoqli ot|Turdosh ot|Mavhum ot|Sifat", 0],
-        ["1:369. \"Kitob\" so'zi turi", "Turdosh ot|Atoqli ot|Mavhum ot|Son", 0],
-        ["1:370. \"Baxt\" so'zi turi", "Mavhum ot|Turdosh ot|Atoqli ot|Sifat", 0],
-        ["1:371. \"Shirin\" so'zi turi", "Sifat|Ot|Son|Ravish", 0],
-        ["1:372. \"Besh\" so'zi turi", "Son|Ot|Sifat|Fe'l", 0],
-        ["1:373. \"Men\" so'zi turi", "Olmosh|Ot|Sifat|Ravish", 0],
-        ["1:374. \"Katta\" so'zi turi", "Sifat|Ot|Son|Olmosh", 0],
-        ["1:375. \"Biz\" so'zi turi", "Olmosh|Ot|Sifat|Fe'l", 0],
-        ["1:376. \"Kichik\" so'zi turi", "Sifat|Ot|Son|Ravish", 0],
-        ["1:377. \"Choyni\" so'zi turi", "Ot|Sifat|Olmosh|Fe'l", 0],
-        ["1:378. \"Siz\" so'zi turi", "Olmosh|Ot|Sifat|Fe'l", 0],
-        ["1:379. \"Institutni\" so'zi turi", "Ot|Sifat|Son|Olmosh", 0],
-        ["1:380. \"Bugun\" so'zi turi", "Ravish|Ot|Sifat|Fe'l", 0],
-        ["1:381. \"Ertaga\" so'zi turi", "Ravish|Ot|Sifat|Son", 0],
-        ["1:382. Mavhum otlar qaysi bandda?", "Sevgi, baxt, umid|Kitob, daftar|Toshkent|Aka, uka", 0],
-        ["1:383. Mavhum otlar qaysi bandda?", "Fikr, orzu, g'oya|Uydan, maktabda|Shifokor|Dori", 0],
-        ["1:384. Mavhum ot mavjud gap", "\"Baxt insonni quvontiradi.\"|Men kitob o'qidim.|U Toshkentga ketdi.|Dars boshlanadi.", 0],
-        ["1:385. Mavhum ot mavjud gap", "\"Umid odamni yashatadi.\"|Shifoxona binosi baland.|Hamshira ukol qildi.|Havo issiq.", 0],
-        ["1:386. O'zbek alifbosi haqida to'g'ri ma'lumot", "29 ta harfdan iborat.|26 ta harfdan iborat.|30 ta|32 ta", 0],
-        ["1:387. Qaysi kelishik bor?", "Qaratqich kelishigi.|Bosh kelishik qo'shimchasi bor.|Kelishiklar 5 ta.|Tushum yo'q", 0],
-        ["1:388. Qaysi kelishik bor?", "O'rin-payt kelishigi.|Chiqish kelishigi yo'q.|Kelishiklar 8 ta.|Bosh kelishik qo'shimchali", 0]
-    ];
 
-    // Умная функция тасования вариантов (алгоритм Фишера-Йетса)
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
+    <div class="quiz-container" id="quiz-card">
+        </div>
 
-    // Разворачиваем сжатую базу с автоматическим перемешиванием ответов на лету
-    let quizQuestions = rawData.map(item => {
-        const rawOptions = item[1].split('|');
-        const correctText = rawOptions[item[2]]; // Сохраняем текст верного ответа
-
-        // Перемешиваем варианты
-        const shuffledOptions = shuffleArray([...rawOptions]);
-
-        return {
-            type: shuffledOptions.length === 2 ? "boolean" : "select",
-            question: item[0],
-            options: shuffledOptions,
-            correctAnswer: correctText // Правильный ответ теперь определяется по тексту, а не по индексу
+    <script>
+        // База данных вопросов из присланного документа
+        const questionsData = {
+            1: [ // ТЕМА 1 (Обычные по 4 варианта, ДА/НЕТ по 2 варианта)
+                {
+                    q: 'Как переводится слово "Горький" на узбекский язык?',
+                    options: ['Achchiq', 'Shirin', 'Nordon', 'Sho\'r'],
+                    correct: 0
+                },
+                {
+                    q: 'Верно ли, что выражение "Sog\'lom turmush uzoq umr manbai" переводится на русский как "В здоровом теле здоровый дух"?',
+                    options: ['ДА (Верно)', 'НЕТ (Неверно)'],
+                    correct: 0
+                },
+                {
+                    q: 'Укажите точный перевод анатомического термина "Матка" на узбекский язык.',
+                    options: ['Bo\'g\'im', 'Mushak', 'Bachadon', 'Bodom bezlari'],
+                    correct: 2
+                },
+                {
+                    q: 'O\'pka to\'qimalarining, ko\'pincha alveolalarning yallig'lanishi bilan kechadigan kasallik qaysi?',
+                    options: ['Qizilcha', 'Zotiljam (Pnevmoniya)', 'Suvchechak', 'Gepatit'],
+                    correct: 1
+                },
+                {
+                    q: 'Верно ли, что узбекское слово "O\'sma" переводится на русский язык как "Осложнение"?',
+                    options: ['ДА', 'НЕТ (Это означает опухоль)'],
+                    correct: 1
+                },
+                {
+                    q: '"Saida bu shoirning she\'rlarini, dostonlarini sevib o\'qiydi." Bu gapda qaysi gap bo\'lagi uyushgan?',
+                    options: ['Ega', 'To\'ldiruvchi', 'Aniqlovchi', 'Hol'],
+                    correct: 1
+                },
+                {
+                    q: 'К какому разряду относятся модальные слова: "Balki, ehtimol, chamasi, shekilli"?',
+                    options: ['Fikrning tartibi', 'Fikrning tasdig\'i', 'Gumon (Сомнение/Предположение)', 'Afsuslanish'],
+                    correct: 2
+                }
+            ],
+            2: [ // ТЕМА 2
+                {
+                    q: 'Как переводится слово "Последствие" (Asorat) на узбекский язык?',
+                    options: ['Asorat', 'Xulq-atvor', 'E\'tiborsizlik', 'Halollik'],
+                    correct: 0
+                },
+                {
+                    q: 'Является ли верным перевод пословицы: "Хороший друг познается в беде" -> "Yaxshi do\'st kulfatda bilinadi"?',
+                    options: ['ДА', 'НЕТ'],
+                    correct: 0
+                },
+                {
+                    q: 'Укажите перевод термина "Щитовидная железа" на узбекский язык.',
+                    options: ['Oshqozon osti bezi', 'So\'lak bezlari', 'Qalqonsimon bez', 'O\'t pufagi'],
+                    correct: 2
+                },
+                {
+                    q: '"Пищевод взрослого человека имеет длину 25-30 см" gapida insonning qaysi a\'zosi haqida aytilgan?',
+                    options: ['Halqum', 'Qizilo\'ngach', 'So\'lak bezlari', 'O\'t pufagi'],
+                    correct: 1
+                }
+            ],
+            3: [ // ТЕМА 3
+                {
+                    q: 'Qaysi javobda ayiruv bog\'lovchilari berilgan?',
+                    options: ['Va, hamda, bilan', 'Ammo, lekin, biroq', 'Yoki, yo, yoxud', 'Na...na'],
+                    correct: 2
+                },
+                {
+                    q: 'Слово "orqali" относится к категории союзов (Bog\'lovchi)?',
+                    options: ['ДА', 'НЕТ (Это послелог — Ko\'makchi)'],
+                    correct: 1
+                },
+                {
+                    q: 'В каком предложении употреблен соединительный союз "hamda"?',
+                    options: ['Biriktiruv bog\'lovchisi qatnashgan gap', 'Zidlov bog\'lovchisi qatnashgan gap', 'Ayiruv bog\'lovchisi qatnashgan gap', 'Inkor bog\'lovchisi qatnashgan gap'],
+                    correct: 0
+                }
+            ]
         };
-    });
 
-    let currentStep = 0;
-    let userAnswers = new Array(quizQuestions.length).fill(null);
-    let isChecked = false;
-    let totalCorrectCalculated = 0;
-    let totalAnsweredCalculated = 0;
+        let currentTheme = 1;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let canAnswer = true;
 
-    function renderQuestion() {
-        isChecked = false;
-        const currentQuestion = quizQuestions[currentStep];
-        
-        document.getElementById('questionNumber').textContent = `Вопрос ${currentStep + 1} из ${quizQuestions.length}`;
-        document.getElementById('questionText').textContent = currentQuestion.question;
+        const quizCard = document.getElementById('quiz-card');
 
-        const progressPercent = (currentStep / quizQuestions.length) * 100;
-        document.getElementById('progressBar').style.width = progressPercent + '%';
-
-        updateLiveScore();
-
-        const prevBtn = document.getElementById('prevBtn');
-        prevBtn.style.opacity = currentStep === 0 ? '0' : '1';
-        prevBtn.disabled = currentStep === 0;
-
-        const nextBtn = document.getElementById('nextBtn');
-        nextBtn.textContent = currentStep === quizQuestions.length - 1 ? 'Проверить результат' : 'Дальше';
-        nextBtn.disabled = userAnswers[currentStep] === null;
-
-        const optionsForm = document.getElementById('optionsForm');
-        optionsForm.className = 'options-container';
-        optionsForm.innerHTML = '';
-
-        if (userAnswers[currentStep] !== null) {
-            optionsForm.classList.add('lock');
-            isChecked = true;
-            nextBtn.disabled = false;
-        }
-
-        currentQuestion.options.forEach((option, index) => {
-            const optionItem = document.createElement('div');
-            optionItem.className = 'option-item';
-            optionItem.id = 'item_' + index;
-
-            const input = document.createElement('input');
-            input.type = 'radio';
-            input.name = 'quiz_option';
-            input.id = 'opt_' + index;
-            input.value = option;
-
-            if (userAnswers[currentStep] === option) {
-                input.checked = true;
+        // Функция инициализации и отрисовки вопроса
+        function renderQuestion() {
+            canAnswer = true;
+            const questions = questionsData[currentTheme];
+            
+            // Если вопросы в теме закончились, показываем результаты
+            if (currentQuestionIndex >= questions.length) {
+                renderResults();
+                return;
             }
 
-            if (userAnswers[currentStep] !== null) {
-                if (option === currentQuestion.correctAnswer) {
-                    optionItem.classList.add('correct');
-                } else if (option === userAnswers[currentStep]) {
-                    optionItem.classList.add('wrong');
-                }
-            }
+            const currentQ = questions[currentQuestionIndex];
 
-            input.addEventListener('change', function() {
-                if (isChecked) return;
-                isChecked = true;
-                userAnswers[currentStep] = this.value;
-
-                optionsForm.classList.add('lock');
-
-                if (this.value === currentQuestion.correctAnswer) {
-                    totalCorrectCalculated++;
-                }
-                totalAnsweredCalculated++;
-
-                currentQuestion.options.forEach((opt, idx) => {
-                    const item = document.getElementById('item_' + idx);
-                    if (opt === currentQuestion.correctAnswer) {
-                        item.classList.add('correct');
-                    } else if (opt === this.value) {
-                        item.classList.add('wrong');
-                    }
-                });
-
-                updateLiveScore();
-                nextBtn.disabled = false;
+            let optionsHtml = '';
+            currentQ.options.forEach((option, index) => {
+                optionsHtml += `
+                    <button class="option-btn" onclick="checkAnswer(${index}, this)">
+                        ${option}
+                    </button>
+                `;
             });
 
-            const label = document.createElement('label');
-            label.className = 'option-label';
-            label.htmlFor = 'opt_' + index;
-            label.textContent = option;
-
-            optionItem.appendChild(input);
-            optionItem.appendChild(label);
-            optionsForm.appendChild(optionItem);
-        });
-    }
-
-    function updateLiveScore() {
-        if (totalAnsweredCalculated === 0) {
-            document.getElementById('liveScore').textContent = `Успеваемость: 0%`;
-        } else {
-            const currentPercent = Math.round((totalCorrectCalculated / totalAnsweredCalculated) * 100);
-            document.getElementById('liveScore').textContent = `Правильно: ${totalCorrectCalculated}/${totalAnsweredCalculated} (${currentPercent}%)`;
+            quizCard.innerHTML = `
+                <div class="question-number">Тема ${currentTheme} • Вопрос ${currentQuestionIndex + 1} из ${questions.length}</div>
+                <div class="question-text">${currentQ.q}</div>
+                <div class="options-list">
+                    ${optionsHtml}
+                </div>
+                <div class="controls">
+                    <div class="score-track">Правильно: ${score}</div>
+                    <button class="next-btn" id="next-button" onclick="nextQuestion()">Дальше</button>
+                </div>
+            `;
         }
-    }
 
-    function goNext() {
-        if (currentStep < quizQuestions.length - 1) {
-            currentStep++;
+        // Функция проверки ответа
+        function checkAnswer(selectedIndex, btnElement) {
+            if (!canAnswer) return; // Запрещаем кликать дважды
+            canAnswer = false;
+
+            const questions = questionsData[currentTheme];
+            const currentQ = questions[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+
+            if (selectedIndex === currentQ.correct) {
+                btnElement.classList.add('correct');
+                score++;
+            } else {
+                btnElement.classList.add('wrong');
+                // Подсвечиваем правильный ответ зелёным
+                allButtons[currentQ.correct].classList.add('correct');
+            }
+
+            // Обновляем текущее количество правильных ответов на панели
+            document.querySelector('.score-track').innerText = `Правильно: ${score}`;
+            // Показываем кнопку перехода к следующему вопросу
+            document.getElementById('next-button').style.display = 'block';
+        }
+
+        // Переход к следующему вопросу
+        function nextQuestion() {
+            currentQuestionIndex++;
             renderQuestion();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            showResults();
         }
-    }
 
-    function goBack() {
-        if (currentStep > 0) {
-            currentStep--;
+        // Переключение тем через вкладки
+        function switchTheme(themeNum) {
+            currentTheme = themeNum;
+            currentQuestionIndex = 0;
+            score = 0;
+
+            // Обновление активного класса на кнопках табов
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach((tab, index) => {
+                if (index + 1 === themeNum) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
             renderQuestion();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    }
 
-    function showResults() {
-        let finalCorrect = 0;
-        quizQuestions.forEach((q, index) => {
-            if (userAnswers[index] === q.correctAnswer) finalCorrect++;
-        });
+        // Финальный экран результатов для конкретной темы
+        function renderResults() {
+            const questions = questionsData[currentTheme];
+            quizCard.innerHTML = `
+                <div class="result-screen">
+                    <h2>Тестирование по Теме ${currentTheme} завершено!</h2>
+                    <div class="result-score">${score} / ${questions.length}</div>
+                    <p>Отличный результат работы с медицинской базой данных!</p>
+                    <button class="restart-btn" onclick="switchTheme(${currentTheme})">Пройти заново</button>
+                </div>
+            `;
+        }
 
-        const scorePercent = Math.round((finalCorrect / quizQuestions.length) * 100);
-        document.getElementById('quizWindow').style.display = 'none';
-        document.getElementById('resultScore').textContent = `Вы ответили правильно на ${finalCorrect} из ${quizQuestions.length} вопросов.`;
-        document.getElementById('resultCircle').textContent = scorePercent + '%';
-        document.getElementById('resultScreen').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function restartQuiz() {
-        currentStep = 0;
-        totalCorrectCalculated = 0;
-        totalAnsweredCalculated = 0;
-        userAnswers = new Array(quizQuestions.length).fill(null);
-        
-        // Перемешиваем заново при перезапуске теста
-        quizQuestions = rawData.map(item => {
-            const rawOptions = item[1].split('|');
-            const correctText = rawOptions[item[2]];
-            const shuffledOptions = shuffleArray([...rawOptions]);
-            return {
-                type: shuffledOptions.length === 2 ? "boolean" : "select",
-                question: item[0],
-                options: shuffledOptions,
-                correctAnswer: correctText
-            };
-        });
-
-        document.getElementById('resultScreen').style.display = 'none';
-        document.getElementById('quizWindow').style.display = 'block';
+        // Первичный запуск при открытии страницы
         renderQuestion();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    document.addEventListener('DOMContentLoaded', renderQuestion);
-</script>
+    </script>
 </body>
 </html>
